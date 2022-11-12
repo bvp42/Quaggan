@@ -41,6 +41,8 @@ public class Agremiado {
 
     private String correo;
 
+    private boolean accesoATramites;
+
     public List<Cita> getCitas(){
         return new ArrayList<>(this.citas);
     }
