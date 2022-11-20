@@ -209,6 +209,7 @@ public class ProyectoApplication {
 		agremiado.setClave("123456789");
 		agremiado.setNombre("Alan");
 		agremiado.setApellidos("Turing");
+		agremiado.setAccesoATramites(true);
 		repositoryAgremiado.save(agremiado);
 
 		var empleado = new Empleado();
@@ -233,6 +234,6 @@ public class ProyectoApplication {
 
 
 
-		servicioDatosPrueba.generarDatos();
+		// servicioDatosPrueba.generarDatos();
 	}
 }

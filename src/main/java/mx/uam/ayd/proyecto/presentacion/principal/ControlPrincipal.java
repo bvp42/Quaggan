@@ -15,6 +15,7 @@ import mx.uam.ayd.proyecto.presentacion.consultarAvisos.ControlConsultarAvisos;
 import mx.uam.ayd.proyecto.presentacion.consultarCitas.ControlConsultarCitas;
 import mx.uam.ayd.proyecto.presentacion.crearPublicacion.ControlCrearPublicacion;
 import mx.uam.ayd.proyecto.presentacion.procesarTramites.ControlProcesarTramites;
+import mx.uam.ayd.proyecto.presentacion.solicitarTramites.ControlSolicitarTramites;
 
 /**
  * Esta clase lleva el flujo de control de la ventana principal
@@ -40,6 +41,9 @@ public class ControlPrincipal {
 
 	@Autowired
 	private ControlProcesarTramites controlProcesarTramites;
+
+	@Autowired
+	private ControlSolicitarTramites controlSolicitarTramites;
 
 	@Autowired
 	private VentanaPrincipal ventana;
@@ -93,8 +97,7 @@ public class ControlPrincipal {
 
 	public void tramites() {
 		if (agremiado != null)
-			// TODO: llamar al controlador
-			throw new NotImplementedException();
+			controlSolicitarTramites.inicia(agremiado);
 		else if (empleado != null)
 			controlProcesarTramites.inicia();
 	}

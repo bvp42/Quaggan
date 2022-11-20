@@ -43,6 +43,9 @@ public class Agremiado {
 
     private boolean accesoATramites;
 
+    @OneToOne(targetEntity = SolicitudTramite.class, fetch = FetchType.EAGER)
+    private SolicitudTramite solicitudActiva;
+
     public List<Cita> getCitas(){
         return new ArrayList<>(this.citas);
     }
