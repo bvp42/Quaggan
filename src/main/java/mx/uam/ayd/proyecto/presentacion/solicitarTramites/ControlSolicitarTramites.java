@@ -1,5 +1,8 @@
 package mx.uam.ayd.proyecto.presentacion.solicitarTramites;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +40,7 @@ public class ControlSolicitarTramites {
             List<TipoTramite> tramites = servicioTipoTramite.findAll();
             ventana.ventanaSolicitarTramite(agremiado, tramites, this);
         } else {
-            ventana.ventanaTramiteActivo(agremiado, this);   
+            ventana.ventanaTramiteActivo(agremiado, this);
         }
 
     }
@@ -45,5 +48,13 @@ public class ControlSolicitarTramites {
     void adjuntarDocumentos(TipoTramite tipoTramite) {
         ventana.ventanaAdjuntarDocumentos(tipoTramite);
     }
-    
+
+    void enviarSolicitud(TipoTramite tipoTramiteSeleccionado, Path[] listaPaths, Agremiado agremiado)
+            throws IOException {
+        Agremiado agremiadoActualizado = servicioSolicitudTramite.enviarSolicitud(tipoTramiteSeleccionado, listaPaths,
+                agremiado);
+        
+        ventana.ventanaTramiteActivo(agremiadoActualizado, this);
+    }
+
 }

@@ -57,4 +57,9 @@ public class Agremiado {
     public String getNombreCompleto() {
     	return nombre + " " + apellidos;
     }
+
+    public void nuevaSolicitudRealizada(SolicitudTramite nuevaSolicitud) {
+        this.accesoATramites = false;
+        this.solicitudActiva = nuevaSolicitud;
+    }
 }

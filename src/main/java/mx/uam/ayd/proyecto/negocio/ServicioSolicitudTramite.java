@@ -1,16 +1,22 @@
 package mx.uam.ayd.proyecto.negocio;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import mx.uam.ayd.proyecto.datos.RepositoryAgremiado;
+import mx.uam.ayd.proyecto.datos.RepositoryDocumento;
 import mx.uam.ayd.proyecto.datos.RepositorySolicitudTramite;
+import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.Documento;
 import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
+import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
 
 /**
  * Servicio principal para el ControlProcesarTramites
@@ -22,6 +28,12 @@ public class ServicioSolicitudTramite {
 
     @Autowired
     private RepositorySolicitudTramite solicitudTramiteRepository;
+
+    @Autowired 
+    private RepositoryAgremiado repositoryAgremiado;
+
+    @Autowired
+    private RepositoryDocumento repositoryDocumento;
 
     @Autowired
     private ServicioDocumento servicioDocumento;
@@ -154,6 +166,33 @@ public class ServicioSolicitudTramite {
         } catch (IllegalArgumentException e) {
             throw e;
         }
+    }
+
+    public Agremiado enviarSolicitud(TipoTramite tipoTramiteSeleccionado, Path[] listaPaths, Agremiado agremiado) throws IOException {
+        
+        List<Documento> requisitos = new ArrayList<Documento>();
+
+        for (int i = 0; i < listaPaths.length; i++) {
+            Documento temp = servicioDocumento.creaDocumento(listaPaths[i], tipoTramiteSeleccionado.getRequerimientos()[i]);
+            repositoryDocumento.save(temp);
+            requisitos.add(temp);
+        }
+
+        SolicitudTramite nuevaSolicitud = new SolicitudTramite();
+        nuevaSolicitud.setEstado("Pendiente");
+        nuevaSolicitud.setTipoTramite(tipoTramiteSeleccionado);
+        nuevaSolicitud.setFechaSolicitud(new Date(System.currentTimeMillis()));
+        nuevaSolicitud.setRequisitos(requisitos);
+        nuevaSolicitud.setSolicitante(agremiado);
+        
+        solicitudTramiteRepository.save(nuevaSolicitud);
+        
+        agremiado.nuevaSolicitudRealizada(nuevaSolicitud);
+        
+        repositoryAgremiado.save(agremiado);
+        
+
+        return agremiado;
     }
 
 }

@@ -26,13 +26,14 @@ public class VentanaSolicitarTramites extends Pantalla {
 
     private ControlSolicitarTramites control;
     private Agremiado agremiado;
+    private TipoTramite tipoTramiteSeleccionado;
 
     private GridBagConstraints gbc = new GridBagConstraints();
     private JPanel panelCentral, panelSolicitarTramite, panelTramiteActivo;
     private JLabel lblNorth, lblSeleccionarTramite, lblRequisitos, lblDocumentosSeleccionados,
             lblDocumentosSeleccionados_;
     private JButton btnSiguienteSolicitarTramite, btnAdjuntarDocumentos, btnCancelarAdjuntarDocumetos,
-            btnConfirmarSolicitud;
+            btnEnviarSolicitud;
     private JComboBox<String> comboBoxTramitesDisponibles;
     private List<TipoTramite> listaTramites;
     private JList<String> jListRequerimientos;
@@ -57,8 +58,6 @@ public class VentanaSolicitarTramites extends Pantalla {
 
         /* -----PANEL SOLICITAR TRAMITE */
         panelSolicitarTramite = new JPanel();
-        panelSolicitarTramite.setBorder(new LineBorder(new Color(255, 255, 255), 3, true));
-        // panelSolicitarTramite.setLayout(new GridLayout(6, 1, 5, 10));
         panelSolicitarTramite.setLayout(new GridBagLayout());
         panelCentral.add(panelSolicitarTramite);
 
@@ -93,6 +92,7 @@ public class VentanaSolicitarTramites extends Pantalla {
 
         jListRequerimientos = new JList<String>();
         jListRequerimientos.setFont(new Font("Arial", Font.PLAIN, 15));
+        jListRequerimientos.setEnabled(false);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridheight = 1;
@@ -142,20 +142,19 @@ public class VentanaSolicitarTramites extends Pantalla {
         gbc.gridwidth = 1;
         panelSolicitarTramite.add(lblDocumentosSeleccionados_, gbc);
 
-        btnConfirmarSolicitud = new JButton("Confirmar solicitud de trámite");
-        btnConfirmarSolicitud.setFont(new Font("Arial", Font.ITALIC, 15));
+        btnEnviarSolicitud = new JButton("Enviar solicitud de trámite");
+        btnEnviarSolicitud.setFont(new Font("Arial", Font.PLAIN, 15));
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
-        btnConfirmarSolicitud.setEnabled(false);
-        panelSolicitarTramite.add(btnConfirmarSolicitud, gbc);
-
+        btnEnviarSolicitud.setEnabled(false);
+        panelSolicitarTramite.add(btnEnviarSolicitud, gbc);
 
         /* -----PANEL TRAMITE ACTIVO */
 
         panelTramiteActivo = new JPanel();
-        JLabel lblTAtemp = new JLabel("VENTANA DE TRÁMITE ACTIVO");
+        JLabel lblTAtemp = new JLabel("VENTANA DE TRÁMITE ACTIVO POR IMPLEMENTAR");
         panelTramiteActivo.setBorder(new LineBorder(new Color(255, 0, 0), 3, true));
         panelTramiteActivo.add(lblTAtemp);
         panelCentral.add(panelTramiteActivo);
@@ -169,6 +168,8 @@ public class VentanaSolicitarTramites extends Pantalla {
         btnCancelarAdjuntarDocumetos.addActionListener(e -> btnCancelarAdjuntarDocumetos());
 
         btnAdjuntarDocumentos.addActionListener(e -> adjuntarDocumentos());
+
+        btnEnviarSolicitud.addActionListener(e -> enviarSolicitud());
 
     }
 
@@ -202,7 +203,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         lblDocumentosSeleccionados_.setVisible(false);
         btnCancelarAdjuntarDocumetos.setVisible(false);
         btnAdjuntarDocumentos.setVisible(false);
-        btnConfirmarSolicitud.setVisible(false);
+        btnEnviarSolicitud.setVisible(false);
 
         panelTramiteActivo.setVisible(false);
 
@@ -233,6 +234,8 @@ public class VentanaSolicitarTramites extends Pantalla {
 
     void ventanaAdjuntarDocumentos(TipoTramite tipoTramite) {
 
+        this.tipoTramiteSeleccionado = tipoTramite;
+
         panelSolicitarTramite.setVisible(true);
         lblSeleccionarTramite.setText("Tramite seleccionado:");
         comboBoxTramitesDisponibles.setEnabled(false);
@@ -241,10 +244,11 @@ public class VentanaSolicitarTramites extends Pantalla {
         btnAdjuntarDocumentos.setVisible(true);
         lblDocumentosSeleccionados.setVisible(true);
         lblDocumentosSeleccionados_.setVisible(true);
-        btnConfirmarSolicitud.setVisible(true);
-        btnConfirmarSolicitud.setEnabled(false);
+        btnEnviarSolicitud.setVisible(true);
+        btnEnviarSolicitud.setEnabled(false);
 
         log.info("SIGUIENTE");
+        JOptionPane.showMessageDialog(this, "Por favor, adjunte los documentos en el orden listado.");
 
         panelTramiteActivo.setVisible(false);
 
@@ -261,7 +265,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         lblDocumentosSeleccionados.setVisible(false);
         lblDocumentosSeleccionados_.setVisible(false);
         lblDocumentosSeleccionados_.setText("Ningún documento seleccionado.");
-        btnConfirmarSolicitud.setVisible(false);
+        btnEnviarSolicitud.setVisible(false);
 
         log.info("CANCELAR");
 
@@ -287,7 +291,42 @@ public class VentanaSolicitarTramites extends Pantalla {
             }
 
             lblDocumentosSeleccionados_.setText(cadena);
-            btnConfirmarSolicitud.setEnabled(true);
+            btnEnviarSolicitud.setEnabled(true);
+
+        }
+
+    }
+
+    void enviarSolicitud() {
+
+        int opcionSeleccionada = JOptionPane.showConfirmDialog(this,
+                "¿Esta seguro de enviar esta solicitud de trámite? \n Recuerde que solo puede tener una solicitud de trámite activa",
+                "Confirmar selección", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (opcionSeleccionada == 0) {
+
+            try {
+
+                Path[] listaPaths = new Path[chooser.getSelectedFiles().length];
+
+                for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
+                    listaPaths[i] = chooser.getSelectedFiles()[i].toPath();
+                }
+
+                control.enviarSolicitud(tipoTramiteSeleccionado, listaPaths, agremiado);
+
+            } catch (Exception e) {
+                if (chooser.getSelectedFiles().length > 1) {
+                    JOptionPane.showMessageDialog(this, "Ha ocurrido un error, seleccione nuevamente los documentos",
+                            "Error al adjuntar los documentos", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Ha ocurrido un error, seleccione nuevamente el documento",
+                            "Error al adjuntar el documento", JOptionPane.ERROR_MESSAGE);
+                }
+
+                e.printStackTrace();
+
+            }
 
         }
 
