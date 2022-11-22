@@ -119,8 +119,14 @@ public class VentanaCrearPublicacion extends Pantalla {
 
 		JButton botonTelegram = new JButton("Telegram");
 		botonTelegram.setEnabled(false);
-		botonTelegram.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		botonTelegram.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				//Si el boton fue clickeado mandar un mensaje de confirmacion
+				//y mandar a llamar al metodo
+				int input = JOptionPane.showConfirmDialog(null, "Deseas Publicar en Telegram",null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+				if (input == 0) {
+					controlador.difundirTelegram();
+				}
 			}
 		});
 

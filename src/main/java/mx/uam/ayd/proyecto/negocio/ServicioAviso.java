@@ -14,6 +14,7 @@ import mx.uam.ayd.proyecto.negocio.modelo.Aviso;
 public class ServicioAviso {
 	@Autowired 
 	AvisoRepository avisoRepository;
+	Aviso aviso_publicado;
 	
 	private Calendar obtenerFecha() {
 		Calendar fecha = Calendar.getInstance();
@@ -34,6 +35,8 @@ public class ServicioAviso {
 		aviso = avisoRepository.save(aviso);
 		
 		if (aviso.getIdAviso()>-1) {
+			//Vamos a mantener el objeto de tipo aviso para retransmitir la infomacion
+			aviso_publicado = aviso;
 			return true;
 		}else {
 			return false;
@@ -41,10 +44,15 @@ public class ServicioAviso {
 		
 		
 	}
+	
+	public boolean difundirTelegram() {
+		servicioTelegram.difundirTelegram(aviso_publicado);
+		}
 
 	public List<Aviso> recuperaTodos() {
 		return avisoRepository.findAll();
 	}
-
+	
+	
 	
 }

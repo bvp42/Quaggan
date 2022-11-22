@@ -41,5 +41,8 @@ public class ControlCrearPublicacion {
 			ventanaCrearPublicacion.activaLogoConfirmacionOcultaCrear();
 		}
 		
-	}	
+	}
+	public void difundirTelegram() {
+		servicioAviso.difundirTelegram();
+	}
 }
