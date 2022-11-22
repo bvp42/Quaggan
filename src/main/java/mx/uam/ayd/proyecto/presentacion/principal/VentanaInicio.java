@@ -15,7 +15,9 @@ import java.awt.event.MouseEvent;
 public class VentanaInicio extends Pantalla {
 	
 	private ControlPrincipal controlPrincipal;
-	private final JLabel lblSesion;
+	private JLabel lblSesion;
+	private JButton btnCerraSesion;
+	private JButton btnIniciarSesion;
 
 	public VentanaInicio() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -33,7 +35,7 @@ public class VentanaInicio extends Pantalla {
 		gbc_lblBienvenida.gridy = 1;
 		add(lblBienvenida, gbc_lblBienvenida);
 		
-		lblSesion = new JLabel("Usted no ha inicado sesión");
+		lblSesion = new JLabel("Usted no ha iniciado sesión");
 		GridBagConstraints gbc_lblSesion = new GridBagConstraints();
 		gbc_lblSesion.gridwidth = 3;
 		gbc_lblSesion.insets = new Insets(0, 0, 5, 5);
@@ -41,33 +43,38 @@ public class VentanaInicio extends Pantalla {
 		gbc_lblSesion.gridy = 3;
 		add(lblSesion, gbc_lblSesion);
 		
-		JButton btnLoginagremiado = new JButton("login agremiado");
-		btnLoginagremiado.addMouseListener(new MouseAdapter() {
+		btnIniciarSesion= new JButton("Iniciar sesión");
+		btnIniciarSesion.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				controlPrincipal.loginAgremiado();
-				lblSesion.setText("Sesión iniciado como agremiado");
+				controlPrincipal.inicia();
 			}
 		});
-		GridBagConstraints gbc_btnLoginagremiado = new GridBagConstraints();
-		gbc_btnLoginagremiado.insets = new Insets(0, 0, 5, 5);
-		gbc_btnLoginagremiado.gridx = 1;
-		gbc_btnLoginagremiado.gridy = 5;
-		add(btnLoginagremiado, gbc_btnLoginagremiado);
+		GridBagConstraints gbc_btnIniciarSesion = new GridBagConstraints();
+		gbc_btnIniciarSesion.gridwidth = 3;
+		gbc_btnIniciarSesion.insets = new Insets(0, 0, 5, 5);
+		gbc_btnIniciarSesion.gridx = 1;
+		gbc_btnIniciarSesion.gridy = 5;
+		add(btnIniciarSesion, gbc_btnIniciarSesion);
+
 		
-		JButton btnLoginempleado = new JButton("login empleado");
-		btnLoginempleado.addMouseListener(new MouseAdapter() {
+		btnCerraSesion= new JButton("Cerrar sesión");
+		btnCerraSesion.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				controlPrincipal.loginEmpleado();
-				lblSesion.setText("Sesión iniciado como empleado");
+				controlPrincipal.cerrarSesion();
+				lblSesion.setText("Sesión cerrada");
+				btnCerraSesion.setVisible(false);
+				btnIniciarSesion.setVisible(true);
 			}
 		});
-		GridBagConstraints gbc_btnLoginempleado = new GridBagConstraints();
-		gbc_btnLoginempleado.insets = new Insets(0, 0, 5, 5);
-		gbc_btnLoginempleado.gridx = 3;
-		gbc_btnLoginempleado.gridy = 5;
-		add(btnLoginempleado, gbc_btnLoginempleado);
+		GridBagConstraints gbc_btnCerrarSesion = new GridBagConstraints();
+		gbc_btnCerrarSesion.gridwidth = 3;
+		gbc_btnCerrarSesion.insets = new Insets(0, 0, 5, 5);
+		gbc_btnCerrarSesion.gridx = 1;
+		gbc_btnCerrarSesion.gridy = 5;
+		add(btnCerraSesion, gbc_btnCerrarSesion);
+		btnCerraSesion.setVisible(false);
 	}
 	
 	public void muestra(ControlPrincipal controlPrincipal) {
@@ -75,5 +82,10 @@ public class VentanaInicio extends Pantalla {
 
 		setVisible(true);
 	}
-
+	//Muestra que rol ha iniciado sesion
+	public void ActualizaVentanaInicio(String rol){
+		lblSesion.setText("Ustes ha iniciado sesión como "+ rol);
+		btnCerraSesion.setVisible(true);
+		btnIniciarSesion.setVisible(false);
+	}
 }

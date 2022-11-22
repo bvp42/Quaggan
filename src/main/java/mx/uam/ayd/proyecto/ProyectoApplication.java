@@ -2,6 +2,7 @@ package mx.uam.ayd.proyecto;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -94,9 +95,10 @@ public class ProyectoApplication {
 	 * inicializa la bd y arranca el controlador
 	 * otro comentario
 	 * @throws IOException
+	 * @throws NoSuchAlgorithmException
 	 */
 	@PostConstruct
-	public void inicia() throws IOException {
+	public void inicia() throws IOException, NoSuchAlgorithmException {
 		
 		inicializaBD();
 		
@@ -108,10 +110,11 @@ public class ProyectoApplication {
 	 * 
 	 * Inicializa la BD con datos
 	 * @throws IOException
+	 * @throws NoSuchAlgorithmException
 	 *
 	 * 
 	 */
-	public void inicializaBD() throws IOException {
+	public void inicializaBD() throws IOException, NoSuchAlgorithmException {
 
 		/***** Datos para Agremiado *****/
 		Agremiado empleado1 = new Agremiado();
@@ -206,7 +209,7 @@ public class ProyectoApplication {
 		solicitudTramiteRepository.save(solicitud3);
 
 		var agremiado = new Agremiado();
-		agremiado.setClave("123456789");
+		agremiado.setClave(controlPrincipal.encriptada("."));
 		agremiado.setNombre("Alan");
 		agremiado.setApellidos("Turing");
 		repositoryAgremiado.save(agremiado);
@@ -214,6 +217,7 @@ public class ProyectoApplication {
 		var empleado = new Empleado();
 		empleado.setId(987654321);
 		empleado.setNombre("Yanely");
+		empleado.setContraseña(controlPrincipal.encriptada("123")); 
 		empleado.setApellidos("Bermejo Hernandez");
 		empleado.setTipoEmpleado("encargada");
 		repositoryEmpleado.save(empleado);

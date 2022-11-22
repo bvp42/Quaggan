@@ -20,7 +20,7 @@ public class Agremiado {
 
     @Id
     private String clave;
-
+    
     private String nombre;
 
     private String apellidos;

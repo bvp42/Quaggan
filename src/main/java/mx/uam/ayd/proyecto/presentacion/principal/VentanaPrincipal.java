@@ -63,6 +63,7 @@ public class VentanaPrincipal extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				control.ventanaInicio();
+				
 			}
 		});
 		GridBagConstraints gbc_btnInicio = new GridBagConstraints();

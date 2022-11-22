@@ -1,11 +1,8 @@
 package mx.uam.ayd.proyecto.negocio;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
 import mx.uam.ayd.proyecto.datos.RepositoryEmpleado;
 import mx.uam.ayd.proyecto.negocio.modelo.Empleado;
 
@@ -31,5 +28,13 @@ public class ServicioEmpleado {
 		}
 				
 		return empleados;
+	}
+
+	public boolean validarEmpleado(String usuario, String password){
+		return empleadoRepository.existsByContraseñaAndNombre(password, usuario);
+	}
+
+	public Empleado obtenEmpleado(String usuario, String password){
+		return empleadoRepository.findByContraseñaAndNombre(password, usuario);
 	}
 }
