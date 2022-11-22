@@ -1,9 +1,7 @@
 package mx.uam.ayd.proyecto.presentacion.crearPublicacion;
 
 import org.springframework.stereotype.Component;
-
-
-
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -42,7 +40,7 @@ public class ControlCrearPublicacion {
 		}
 		
 	}
-	public void difundirTelegram() {
+	public void difundirTelegram() throws TelegramApiException {
 		servicioAviso.difundirTelegram();
 	}
 }

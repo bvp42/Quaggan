@@ -5,9 +5,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import mx.uam.ayd.proyecto.datos.AvisoRepository;
 import mx.uam.ayd.proyecto.negocio.modelo.Aviso;
+import mx.uam.ayd.proyecto.negocio.ServicioTelegram;
 
 
 @Service
@@ -45,8 +50,15 @@ public class ServicioAviso {
 		
 	}
 	
-	public boolean difundirTelegram() {
-		servicioTelegram.difundirTelegram(aviso_publicado);
+	public boolean difundirTelegram() throws TelegramApiException {
+		String textoMensaje = aviso_publicado.getContenido();
+		String chatId = "-1001426324235";
+		SendMessage mensaje = new SendMessage();
+		mensaje.setChatId(chatId);
+		mensaje.setText(textoMensaje);
+		ServicioTelegram servicioTelegram = new ServicioTelegram();
+		servicioTelegram.sendMsg(chatId, textoMensaje);
+		return true;	
 		}
 
 	public List<Aviso> recuperaTodos() {

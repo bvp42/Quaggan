@@ -23,6 +23,7 @@ import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 
@@ -125,7 +126,13 @@ public class VentanaCrearPublicacion extends Pantalla {
 				//y mandar a llamar al metodo
 				int input = JOptionPane.showConfirmDialog(null, "Deseas Publicar en Telegram",null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 				if (input == 0) {
-					controlador.difundirTelegram();
+					botonTelegram.setEnabled(false);
+					try {
+						controlador.difundirTelegram();
+					} catch (TelegramApiException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});

@@ -72,6 +72,14 @@
 			<artifactId>LGoodDatePicker</artifactId>
 			<version>11.2.1</version>
 		</dependency>
+		<!-- TelegramBots-->
+		<!-- https://mvnrepository.com/artifact/org.telegram/telegrambots-spring-boot-starter -->
+		<dependency>
+    		<groupId>org.telegram</groupId>
+    		<artifactId>telegrambots-spring-boot-starter</artifactId>
+    		<version>6.3.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
