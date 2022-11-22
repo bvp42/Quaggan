@@ -1,26 +1,21 @@
 package mx.uam.ayd.proyecto.negocio;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-
 import mx.uam.ayd.proyecto.datos.AvisoRepository;
 import mx.uam.ayd.proyecto.negocio.modelo.Aviso;
-import mx.uam.ayd.proyecto.negocio.ServicioTelegram;
-
 
 @Service
 public class ServicioAviso {
-	@Autowired 
+	@Autowired
 	AvisoRepository avisoRepository;
 	Aviso aviso_publicado;
-	
+
 	private Calendar obtenerFecha() {
 		Calendar fecha = Calendar.getInstance();
 		return fecha;
@@ -28,7 +23,8 @@ public class ServicioAviso {
 
 	public boolean crearPublicacion(String imagen, String texto) {
 		Calendar fecha = obtenerFecha();
-		String cadenaFecha = String.format("%04d-%02d-%02d",fecha.get(Calendar.YEAR),(fecha.get(Calendar.MONTH)+1),fecha.get(Calendar.DAY_OF_MONTH));
+		String cadenaFecha = String.format("%04d-%02d-%02d", fecha.get(Calendar.YEAR), (fecha.get(Calendar.MONTH) + 1),
+				fecha.get(Calendar.DAY_OF_MONTH));
 		Aviso aviso = new Aviso();
 		aviso.setFecha(cadenaFecha);
 		aviso.setImagen(imagen);
@@ -36,35 +32,59 @@ public class ServicioAviso {
 			throw new IllegalArgumentException();
 		}
 		aviso.setContenido(texto);
-		
+
 		aviso = avisoRepository.save(aviso);
-		
-		if (aviso.getIdAviso()>-1) {
-			//Vamos a mantener el objeto de tipo aviso para retransmitir la infomacion
+
+		if (aviso.getIdAviso() > -1) {
+			// Vamos a mantener el objeto de tipo aviso para retransmitir la infomacion
 			aviso_publicado = aviso;
 			return true;
-		}else {
+		} else {
 			return false;
 		}
-		
-		
+
 	}
-	
-	public boolean difundirTelegram() throws TelegramApiException {
-		String textoMensaje = aviso_publicado.getContenido();
-		String chatId = "-1001426324235";
-		SendMessage mensaje = new SendMessage();
-		mensaje.setChatId(chatId);
-		mensaje.setText(textoMensaje);
-		ServicioTelegram servicioTelegram = new ServicioTelegram();
-		servicioTelegram.sendMsg(chatId, textoMensaje);
-		return true;	
+
+	/*
+	 * Metodo que permite difundir un aviso a un grupo de Telegram
+	 * 
+	 * @autor Brandon Villada
+	 * 
+	 */
+	public boolean difundirTelegram() throws TelegramApiException, IOException {
+		/*
+		 * Si entramos al condicional y es verdadero necesariamente algo paso mal al
+		 * almacenar nuestra publicacion por lo que no deberiamos poder segir con la
+		 * difusion Por lo que se lanzara una excepcion.
+		 *
+		 */
+		if (aviso_publicado == null) {
+			throw new IOException("No se almaceno la publicacion anterior intentar de nuevo");
 		}
+		/*
+		 * Almacenamos los datos de la publicacion para la difusion
+		 */
+		
+		String textoMensaje = aviso_publicado.getContenido();
+		// Id del grupo de Telegram en donde se retransmiten los avisos
+		String chatId = "-1001426324235";
+		
+		String imagen = aviso_publicado.getImagen();
+		
+		// Creamos una instancia del servicio para poder manejar el bot
+		ServicioTelegram servicioTelegram = new ServicioTelegram();
+
+		if (imagen != null) {
+			servicioTelegram.sendPhoto(chatId, imagen, textoMensaje);
+			return true;
+		} else {
+			servicioTelegram.sendMessage(chatId, textoMensaje);
+			return true;
+		}
+	}
 
 	public List<Aviso> recuperaTodos() {
 		return avisoRepository.findAll();
 	}
-	
-	
-	
+
 }
