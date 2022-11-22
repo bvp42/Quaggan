@@ -1,6 +1,5 @@
 package mx.uam.ayd.proyecto.negocio;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ public class ServicioSolicitudTramite {
     @Autowired
     private RepositorySolicitudTramite solicitudTramiteRepository;
 
-    @Autowired 
+    @Autowired
     private RepositoryAgremiado repositoryAgremiado;
 
     @Autowired
@@ -168,31 +167,62 @@ public class ServicioSolicitudTramite {
         }
     }
 
-    public Agremiado enviarSolicitud(TipoTramite tipoTramiteSeleccionado, Path[] listaPaths, Agremiado agremiado) throws IOException {
-        
-        List<Documento> requisitos = new ArrayList<Documento>();
+    /**
+     * Método que se encarga de crear todos los elementos necesarios necesarios para
+     * la nueva solicitud a registrar y comunica a los repositorios los datos que
+     * deben almacenarse. Devuelve al agremiado con sesión iniciada con su
+     * información actualizada (Cancelado su acceso a trámites y ligada su solicitud
+     * activa).
+     * 
+     * @param tipoTramiteSeleccionado El trámite que se desea solicitar
+     * @param listaPaths              Lista que contiene las rutas del o los
+     *                                archivos seleccionados que se han adjuntado
+     *                                como requerimientos
+     * @param agremiado               agremiado con sesión iniciada que solicta el
+     *                                trámite
+     * @return agremiado con sesión iniciada con datos actualizados
+     * @throws IOException
+     * @throws IllegalArgumentException
+     */
+    public Agremiado enviarSolicitud(TipoTramite tipoTramiteSeleccionado, Path[] listaPaths, Agremiado agremiado)
+            throws IOException, IllegalArgumentException {
 
-        for (int i = 0; i < listaPaths.length; i++) {
-            Documento temp = servicioDocumento.creaDocumento(listaPaths[i], tipoTramiteSeleccionado.getRequerimientos()[i]);
-            repositoryDocumento.save(temp);
-            requisitos.add(temp);
+        if ((tipoTramiteSeleccionado == null) || (listaPaths == null) || (agremiado == null)) {
+            throw new IllegalArgumentException("Argumento nulo no válido");
         }
 
-        SolicitudTramite nuevaSolicitud = new SolicitudTramite();
-        nuevaSolicitud.setEstado("Pendiente");
-        nuevaSolicitud.setTipoTramite(tipoTramiteSeleccionado);
-        nuevaSolicitud.setFechaSolicitud(new Date(System.currentTimeMillis()));
-        nuevaSolicitud.setRequisitos(requisitos);
-        nuevaSolicitud.setSolicitante(agremiado);
-        
-        solicitudTramiteRepository.save(nuevaSolicitud);
-        
-        agremiado.nuevaSolicitudRealizada(nuevaSolicitud);
-        
-        repositoryAgremiado.save(agremiado);
-        
+        List<Documento> requisitos = new ArrayList<Documento>();
 
-        return agremiado;
+        try {
+
+            for (int i = 0; i < listaPaths.length; i++) {
+                Documento temp = servicioDocumento.creaDocumento(listaPaths[i],
+                        tipoTramiteSeleccionado.getRequerimientos()[i]);
+                repositoryDocumento.save(temp);
+                requisitos.add(temp);
+            }
+    
+            SolicitudTramite nuevaSolicitud = new SolicitudTramite();
+            nuevaSolicitud.setEstado("Pendiente");
+            nuevaSolicitud.setTipoTramite(tipoTramiteSeleccionado);
+            nuevaSolicitud.setFechaSolicitud(new Date(System.currentTimeMillis()));
+            nuevaSolicitud.setRequisitos(requisitos);
+            nuevaSolicitud.setSolicitante(agremiado);
+    
+            solicitudTramiteRepository.save(nuevaSolicitud);
+    
+            agremiado.nuevaSolicitudRealizada(nuevaSolicitud);
+    
+            repositoryAgremiado.save(agremiado);
+    
+            return agremiado;
+            
+        } catch (IOException e) {
+           throw e;
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
+
     }
 
 }

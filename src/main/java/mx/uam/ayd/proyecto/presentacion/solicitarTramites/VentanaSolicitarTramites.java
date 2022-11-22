@@ -7,16 +7,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.util.List;
 
-import java.io.*;
 import java.nio.file.Path;
 
 import org.springframework.stereotype.Component;
 
-import com.privatejgoodies.forms.layout.CellConstraints.Alignment;
-
 import lombok.extern.slf4j.Slf4j;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
-import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 
@@ -222,7 +218,7 @@ public class VentanaSolicitarTramites extends Pantalla {
     }
 
     /**
-     * Actualiza los documentos requeridos en un trámte dependiendo de la opción
+     * Actualiza los documentos requeridos en un trámite dependiendo de la opción
      * seleccionada en el ComboBox
      */
     void actualizarListaRequerimientos() {
@@ -232,6 +228,12 @@ public class VentanaSolicitarTramites extends Pantalla {
 
     }
 
+    /**
+     * Método que actualiza la interfaz para mostrar los elementos necesarios para
+     * adjuntar documentos a una solicitud de trámite
+     * 
+     * @param tipoTramite
+     */
     void ventanaAdjuntarDocumentos(TipoTramite tipoTramite) {
 
         this.tipoTramiteSeleccionado = tipoTramite;
@@ -254,6 +256,10 @@ public class VentanaSolicitarTramites extends Pantalla {
 
     }
 
+    /**
+     * Método invocado al dar clic en el botón Cancelar de la interfaz para adjuntar
+     * documentos (reestablece la interfaz al estado anterior)
+     */
     void btnCancelarAdjuntarDocumetos() {
 
         panelSolicitarTramite.setVisible(true);
@@ -272,6 +278,10 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.setVisible(false);
     }
 
+    /**
+     * Método que invoca una ventana que permite seleccionar los documentos pdf que
+     * se desean adjuntar
+     */
     void adjuntarDocumentos() {
 
         chooser = new JFileChooser();
@@ -297,6 +307,10 @@ public class VentanaSolicitarTramites extends Pantalla {
 
     }
 
+    /**
+     * Método que comunica al control los datos necesarios para registrar la
+     * solicitud de trámite
+     */
     void enviarSolicitud() {
 
         int opcionSeleccionada = JOptionPane.showConfirmDialog(this,
