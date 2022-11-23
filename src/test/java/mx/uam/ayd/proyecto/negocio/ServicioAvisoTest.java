@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.AdditionalAnswers.*;
 
-
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import mx.uam.ayd.proyecto.datos.AvisoRepository;
 import mx.uam.ayd.proyecto.negocio.modelo.Aviso;
@@ -23,6 +24,8 @@ import mx.uam.ayd.proyecto.negocio.modelo.Aviso;
 class ServicioAvisoTest {
 	@Mock
 	AvisoRepository avisosRepository;
+	@Mock
+	Aviso aviso_publicado;
 	
 	@InjectMocks
 	ServicioAviso servicioAviso;
@@ -73,7 +76,12 @@ class ServicioAvisoTest {
 		
 		assertThrows(IllegalArgumentException.class, () -> servicioAviso.crearPublicacion("hola", null));
 	}
-	
+	@Test
+	void testdifundirTelegram() {
+		//Prueba 6 Lanza una exception si aviso_publicacion es null;
+		assertThrows(NullPointerException.class, () -> servicioAviso.difundirTelegram());
+		
+	}
 	
 
 }

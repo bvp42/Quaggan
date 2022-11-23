@@ -212,6 +212,7 @@ public class ProyectoApplication {
 		agremiado.setClave(controlPrincipal.encriptada("."));
 		agremiado.setNombre("Alan");
 		agremiado.setApellidos("Turing");
+		agremiado.setAccesoATramites(true);
 		repositoryAgremiado.save(agremiado);
 
 		var empleado = new Empleado();
@@ -237,6 +238,6 @@ public class ProyectoApplication {
 
 
 
-		servicioDatosPrueba.generarDatos();
+		// servicioDatosPrueba.generarDatos();
 	}
 }

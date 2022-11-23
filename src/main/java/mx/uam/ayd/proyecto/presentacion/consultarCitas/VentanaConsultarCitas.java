@@ -63,7 +63,7 @@ public class VentanaConsultarCitas extends Pantalla {
 			public void mouseClicked(MouseEvent e) {
 				btnEditarFiltros.setVisible(false);
 				btnTerminar.setVisible(true);
-				btnAgregarFiltro.setVisible(true);
+				btnAgregarFiltro.setVisible(false); // El original es en true
 				scrollPane_1.setVisible(true);
 				
 				gridBagLayout.rowHeights[0] = 1;
@@ -141,7 +141,7 @@ public class VentanaConsultarCitas extends Pantalla {
 		btnAgregarFiltro.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				agregarFiltro();
+				// agregarFiltro(); Se comento la función
 			}
 		});
 		btnAgregarFiltro.addActionListener(e -> {
@@ -217,8 +217,18 @@ public class VentanaConsultarCitas extends Pantalla {
 				.sorted()
 				.map(cita -> new Object[] {cita.getFecha().toString() + " - " + cita.getHora().toString(), cita.getAgremiado().getNombreCompleto(), cita.getMotivo()})
 				.toArray(Object[][]::new);
+		
+		// Se agrego un nuevo bloque de codigo que corrige el problema.
+		DefaultTableModel tableModel = new DefaultTableModel(filas, columnas) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				//all cells false
+				return false;
+			}
+		};
+		table.setModel(tableModel);
 
-		table.setModel(new DefaultTableModel(filas, columnas));
+		// table.setModel(new DefaultTableModel(filas, columnas)); Se comento la función
 
 		revalidate();
 		repaint();

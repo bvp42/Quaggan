@@ -72,28 +72,28 @@ public class ServicioDocumento {
      * Crea un objeto de tipo Documento en base a la dirección de un archivo pdf
      * seleccionada por el usuario
      * 
-     * @param pathDocTramiteFinalizado la dirección del archivo pdf
-     * @param tipoDocumento            el tipo de documento que se está creando
+     * @param pathDoc       la dirección del archivo pdf
+     * @param tipoDocumento el tipo de documento que se está creando
      * @throws IOException
      * @throws IllegalArgumentException
      * @return el objeto de tipo Documento creado
      */
-    public Documento creaDocumento(Path pathDocTramiteFinalizado_, String tipoDocumento_) throws IOException {
+    public Documento creaDocumento(Path pathDoc_, String tipoDocumento_) throws IOException {
 
-        Path pathDocTramiteFinalizado = pathDocTramiteFinalizado_;
+        Path pathDoc = pathDoc_;
         String tipoDocumento = tipoDocumento_;
 
-        if ((pathDocTramiteFinalizado == null) || (tipoDocumento == null))
+        if ((pathDoc == null) || (tipoDocumento == null))
             throw new IllegalArgumentException("Argumento nulo no válido");
 
-        Documento documentoTramiteFinalizado = new Documento();
-        documentoTramiteFinalizado.setTipoDocumento(tipoDocumento);
+        Documento documento = new Documento();
+        documento.setTipoDocumento(tipoDocumento);
 
         try {
 
-            byte[] bytesDocTramiteFinalizado = Files.readAllBytes(pathDocTramiteFinalizado);
-            documentoTramiteFinalizado.setArchivo(bytesDocTramiteFinalizado);
-            return documentoTramiteFinalizado;
+            byte[] bytesDocTramiteFinalizado = Files.readAllBytes(pathDoc);
+            documento.setArchivo(bytesDocTramiteFinalizado);
+            return documento;
 
         } catch (IOException e) {
             throw e;

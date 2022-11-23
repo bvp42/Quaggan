@@ -158,7 +158,7 @@ public class ComponenteFiltro extends JPanel {
 		GridBagConstraints gbc_btnEliminar = new GridBagConstraints();
 		gbc_btnEliminar.gridx = 2;
 		gbc_btnEliminar.gridy = 0;
-		add(btnEliminar, gbc_btnEliminar);
+		// add(btnEliminar, gbc_btnEliminar); Se comento la funcion
 		
 		filtro = new Filtro("fecha", Operador.FECHA_EXACTA, LocalDate.now());
 	}

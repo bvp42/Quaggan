@@ -15,7 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import mx.uam.ayd.proyecto.datos.RepositoryAgremiado;
+import mx.uam.ayd.proyecto.datos.RepositoryDocumento;
 import mx.uam.ayd.proyecto.datos.RepositorySolicitudTramite;
+import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.Documento;
 import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
@@ -28,6 +31,12 @@ class ServicioSolicitudTramiteTest {
 
 	@Mock
 	private RepositorySolicitudTramite repositorySolicitudTramite;
+
+	@Mock
+	private RepositoryAgremiado repositoryAgremiado;
+
+	@Mock
+	private RepositoryDocumento repositoryDocumento;
 
 	@InjectMocks
 	private ServicioSolicitudTramite servicio;
@@ -129,12 +138,13 @@ class ServicioSolicitudTramiteTest {
 
 		try {
 			assertInstanceOf(SolicitudTramite.class, servicio.aceptarDocumentos(solicitud2),
-				"No devolvió una SolicitudTramite");
-			assertEquals("En progreso", servicio.aceptarDocumentos(solicitud2).getEstado(), "Debería ser \"En progreso\"");
+					"No devolvió una SolicitudTramite");
+			assertEquals("En progreso", servicio.aceptarDocumentos(solicitud2).getEstado(),
+					"Debería ser \"En progreso\"");
 		} catch (Exception e) {
-			fail (e.getMessage());
+			fail(e.getMessage());
 		}
-		
+
 	}
 
 	@Test
@@ -175,18 +185,17 @@ class ServicioSolicitudTramiteTest {
 		SolicitudTramite solicitudSinDocumentos = new SolicitudTramite();
 		solicitudSinDocumentos.setRequisitos(new ArrayList<Documento>());
 		solicitudSinDocumentos.setMotivoRechazo(strNoNula);
-		
 
 		try {
 			when(servicioDocumento.eliminarDocumentos(solicitudCompleta)).thenReturn(solicitudSinDocumentos);
 			assertInstanceOf(SolicitudTramite.class, servicio.rechazarDocumentos(solicitudCompleta, strNoNula),
-				"No devolvió un objeto tipo SolicitudTramite");
+					"No devolvió un objeto tipo SolicitudTramite");
 			assertEquals(strNoNula, servicio.rechazarDocumentos(solicitudCompleta, strNoNula).getMotivoRechazo(),
-				"Las cadenas deberían ser iguales");
-			assertEquals(0, servicio.rechazarDocumentos(solicitudCompleta, strNoNula).getRequisitos().size(), 
-				"Debería ser tamaño cero");
-			assertEquals("Rechazada", servicio.rechazarDocumentos(solicitudCompleta, strNoNula).getEstado(), 
-				"Debería decir \"Rechazada\"");
+					"Las cadenas deberían ser iguales");
+			assertEquals(0, servicio.rechazarDocumentos(solicitudCompleta, strNoNula).getRequisitos().size(),
+					"Debería ser tamaño cero");
+			assertEquals("Rechazada", servicio.rechazarDocumentos(solicitudCompleta, strNoNula).getEstado(),
+					"Debería decir \"Rechazada\"");
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
@@ -199,22 +208,22 @@ class ServicioSolicitudTramiteTest {
 		TipoTramite tipoTramite = new TipoTramite();
 		tipoTramite.setNombreTramite("Licencia");
 		solicitud.setTipoTramite(tipoTramite);
-		Path pathNoValido = Paths.get(".\\src\\main\\resources\\void.pdf");
-		Path pathValido = Paths.get(".\\src\\main\\resources\\Solicitud1Documento1.pdf");
+		Path pathNoValido = Paths.get("./src/main/resources/void.pdf");
+		Path pathValido = Paths.get("./src/main/resources/Solicitud1Documento1.pdf");
 
 		/**
 		 * Caso 1 - SolicitudTramite nulo
 		 */
 		assertThrows(IllegalArgumentException.class,
-			() -> servicio.finalizarTramite(null,pathValido), 
-			"Debió lanzar una excepción");
+				() -> servicio.finalizarTramite(null, pathValido),
+				"Debió lanzar una excepción");
 
 		/**
 		 * Caso 2 - Path nulo
 		 */
 		assertThrows(IllegalArgumentException.class,
-			() -> servicio.finalizarTramite(solicitud, null),
-			"Debió lanzar una excepción");
+				() -> servicio.finalizarTramite(solicitud, null),
+				"Debió lanzar una excepción");
 
 		/**
 		 * Caso 3 - El documento indicado por el path no existe
@@ -222,7 +231,7 @@ class ServicioSolicitudTramiteTest {
 		try {
 			when(servicioDocumento.creaDocumento(pathNoValido, "Licencia")).thenThrow(new IOException());
 			assertThrows(IOException.class, () -> servicio.finalizarTramite(solicitud, pathNoValido),
-				"Debio lanzar IOException");
+					"Debio lanzar IOException");
 		} catch (Exception e) {
 			fail("Solo debió lanzar IOException");
 		}
@@ -233,14 +242,85 @@ class ServicioSolicitudTramiteTest {
 		try {
 			when(servicioDocumento.creaDocumento(pathValido, "Licencia")).thenReturn(new Documento());
 			assertInstanceOf(SolicitudTramite.class, servicio.finalizarTramite(solicitud, pathValido),
-				"No devolvió un obj SolicitudTramite");
+					"No devolvió un obj SolicitudTramite");
 			assertInstanceOf(Documento.class, servicio.finalizarTramite(solicitud, pathValido).getDocumentoTramite(),
-				"No adjunto un tipo Documento en el atrib documentoTramite");
+					"No adjunto un tipo Documento en el atrib documentoTramite");
 			assertEquals("Finalizado", servicio.finalizarTramite(solicitud, pathValido).getEstado(),
-				"Debería decir \"Finalizado\"");
+					"Debería decir \"Finalizado\"");
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
+	}
+
+	@Test
+	void enviarSolicitud() {
+		TipoTramite tipoTramiteValido = new TipoTramite();
+		tipoTramiteValido.setNombreTramite("Licencia");
+		String[] listaRequerimientos = { "Doc A", "Doc B" };
+		tipoTramiteValido.setRequerimientos(listaRequerimientos);
+		Agremiado agremiadoValido = new Agremiado();
+		Path pathValidoA = Paths.get("./src/main/resources/Solicitud2Documento1.pdf");
+		Path pathValidoB = Paths.get("./src/main/resources/Solicitud2Documento2.pdf");
+		Path[] listaPathsValidos = { pathValidoA, pathValidoB };
+		Path pathNoExisteA = Paths.get("./noExisteA.pdf");
+		Path pathNoExisteB = Paths.get("./noExisteB.pdf");
+		Path[] listaPathsNoExisten = { pathNoExisteA, pathNoExisteB };
+
+		/**
+		 * Caso 1: tipoTramite no válido
+		 */
+		assertThrows(IllegalArgumentException.class,
+				() -> servicio.enviarSolicitud(null, listaPathsValidos, agremiadoValido),
+				"Debió lanzar IllegalArgumentException");
+
+		/**
+		 * Caso 2: listaPaths no válida
+		 */
+		assertThrows(IllegalArgumentException.class,
+				() -> servicio.enviarSolicitud(tipoTramiteValido, null, agremiadoValido),
+				"Debió lanzar IllegalArgumentException");
+
+		/**
+		 * Caso 3: agremiado no válido
+		 */
+		assertThrows(IllegalArgumentException.class,
+				() -> servicio.enviarSolicitud(tipoTramiteValido, listaPathsValidos, null),
+				"Debió lanzar IllegalArgumentException");
+
+		/**
+		 * Caso 4: los documentos indicados por la lista de rutas, no existen
+		 */
+		try {
+			when(servicioDocumento.creaDocumento(listaPathsNoExisten[0], tipoTramiteValido.getRequerimientos()[0]))
+					.thenThrow(new IOException());
+			assertThrows(IOException.class,
+					() -> servicio.enviarSolicitud(tipoTramiteValido, listaPathsNoExisten, agremiadoValido),
+					"Debió lanzar IOException");
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+
+		/**
+		 * Caso 5: Los documentos indicados por la lista de rutas, existen
+		 */
+		try {
+			when(servicioDocumento.creaDocumento(listaPathsValidos[0], tipoTramiteValido.getRequerimientos()[0]))
+					.thenReturn(new Documento());
+			when(servicioDocumento.creaDocumento(listaPathsValidos[1], tipoTramiteValido.getRequerimientos()[1]))
+					.thenReturn(new Documento());
+
+			assertInstanceOf(Agremiado.class,
+					servicio.enviarSolicitud(tipoTramiteValido, listaPathsValidos, agremiadoValido),
+					"No devolvió un obj Agremiado");
+			assertInstanceOf(SolicitudTramite.class,
+					servicio.enviarSolicitud(tipoTramiteValido, listaPathsValidos, agremiadoValido).getSolicitudActiva(),
+					"No se estableció la solicitud de tramite activa");
+			assertFalse(servicio.enviarSolicitud(tipoTramiteValido, listaPathsValidos, agremiadoValido).isAccesoATramites());
+
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+
 	}
 
 }

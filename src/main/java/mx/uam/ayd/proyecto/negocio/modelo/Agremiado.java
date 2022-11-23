@@ -41,6 +41,11 @@ public class Agremiado {
 
     private String correo;
 
+    private boolean accesoATramites;
+
+    @OneToOne(targetEntity = SolicitudTramite.class, fetch = FetchType.EAGER)
+    private SolicitudTramite solicitudActiva;
+
     public List<Cita> getCitas(){
         return new ArrayList<>(this.citas);
     }
@@ -51,5 +56,10 @@ public class Agremiado {
     
     public String getNombreCompleto() {
     	return nombre + " " + apellidos;
+    }
+
+    public void nuevaSolicitudRealizada(SolicitudTramite nuevaSolicitud) {
+        this.accesoATramites = false;
+        this.solicitudActiva = nuevaSolicitud;
     }
 }

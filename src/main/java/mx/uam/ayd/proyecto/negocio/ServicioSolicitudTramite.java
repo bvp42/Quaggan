@@ -2,15 +2,20 @@ package mx.uam.ayd.proyecto.negocio;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import mx.uam.ayd.proyecto.datos.RepositoryAgremiado;
+import mx.uam.ayd.proyecto.datos.RepositoryDocumento;
 import mx.uam.ayd.proyecto.datos.RepositorySolicitudTramite;
+import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.Documento;
 import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
+import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
 
 /**
  * Servicio principal para el ControlProcesarTramites
@@ -22,6 +27,12 @@ public class ServicioSolicitudTramite {
 
     @Autowired
     private RepositorySolicitudTramite solicitudTramiteRepository;
+
+    @Autowired
+    private RepositoryAgremiado repositoryAgremiado;
+
+    @Autowired
+    private RepositoryDocumento repositoryDocumento;
 
     @Autowired
     private ServicioDocumento servicioDocumento;
@@ -154,6 +165,64 @@ public class ServicioSolicitudTramite {
         } catch (IllegalArgumentException e) {
             throw e;
         }
+    }
+
+    /**
+     * Método que se encarga de crear todos los elementos necesarios necesarios para
+     * la nueva solicitud a registrar y comunica a los repositorios los datos que
+     * deben almacenarse. Devuelve al agremiado con sesión iniciada con su
+     * información actualizada (Cancelado su acceso a trámites y ligada su solicitud
+     * activa).
+     * 
+     * @param tipoTramiteSeleccionado El trámite que se desea solicitar
+     * @param listaPaths              Lista que contiene las rutas del o los
+     *                                archivos seleccionados que se han adjuntado
+     *                                como requerimientos
+     * @param agremiado               agremiado con sesión iniciada que solicta el
+     *                                trámite
+     * @return agremiado con sesión iniciada con datos actualizados
+     * @throws IOException
+     * @throws IllegalArgumentException
+     */
+    public Agremiado enviarSolicitud(TipoTramite tipoTramiteSeleccionado, Path[] listaPaths, Agremiado agremiado)
+            throws IOException, IllegalArgumentException {
+
+        if ((tipoTramiteSeleccionado == null) || (listaPaths == null) || (agremiado == null)) {
+            throw new IllegalArgumentException("Argumento nulo no válido");
+        }
+
+        List<Documento> requisitos = new ArrayList<Documento>();
+
+        try {
+
+            for (int i = 0; i < listaPaths.length; i++) {
+                Documento temp = servicioDocumento.creaDocumento(listaPaths[i],
+                        tipoTramiteSeleccionado.getRequerimientos()[i]);
+                repositoryDocumento.save(temp);
+                requisitos.add(temp);
+            }
+    
+            SolicitudTramite nuevaSolicitud = new SolicitudTramite();
+            nuevaSolicitud.setEstado("Pendiente");
+            nuevaSolicitud.setTipoTramite(tipoTramiteSeleccionado);
+            nuevaSolicitud.setFechaSolicitud(new Date(System.currentTimeMillis()));
+            nuevaSolicitud.setRequisitos(requisitos);
+            nuevaSolicitud.setSolicitante(agremiado);
+    
+            solicitudTramiteRepository.save(nuevaSolicitud);
+    
+            agremiado.nuevaSolicitudRealizada(nuevaSolicitud);
+    
+            repositoryAgremiado.save(agremiado);
+    
+            return agremiado;
+            
+        } catch (IOException e) {
+           throw e;
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
+
     }
 
 }
