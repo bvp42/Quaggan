@@ -58,8 +58,8 @@ public class ServicioAviso {
 		 * difusion Por lo que se lanzara una excepcion.
 		 *
 		 */
-		if (aviso_publicado == null) {
-			throw new IOException("No se almaceno la publicacion anterior intentar de nuevo");
+		if (aviso_publicado.getIdAviso() <= -1) {
+			throw new NullPointerException("No se almaceno la publicacion anterior intentar de nuevo");
 		}
 		/*
 		 * Almacenamos los datos de la publicacion para la difusion
