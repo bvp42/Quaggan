@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -23,6 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 
@@ -42,16 +44,16 @@ public class VentanaCrearPublicacion extends Pantalla {
 	public VentanaCrearPublicacion() {
 		setBounds(new Rectangle(100, 100, 500, 500));
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{40, 300, 40, 0};
-		gridBagLayout.rowHeights = new int[]{30, 200, 20, 147, 0, 40, 0};
-		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[] { 40, 300, 40, 0 };
+		gridBagLayout.rowHeights = new int[] { 30, 200, 20, 147, 0, 40, 0 };
+		gridBagLayout.columnWeights = new double[] { 1.0, 1.0, 1.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
 
 		var model = new DefaultComboBoxModel<String>();
 		model.addElement("1");
 		model.addElement("2");
-		
+
 		JLabel imagen_placeholder = new JLabel();
 		imagen_p = imagen_placeholder;
 		GridBagConstraints gbc_imagen_placeholder = new GridBagConstraints();
@@ -60,42 +62,36 @@ public class VentanaCrearPublicacion extends Pantalla {
 		gbc_imagen_placeholder.gridx = 1;
 		gbc_imagen_placeholder.gridy = 1;
 		add(imagen_placeholder, gbc_imagen_placeholder);
-		
-		
-		
+
 		JButton btnNewButton_1 = new JButton("Imagen");
-		
+
 		btnimagen = btnNewButton_1;
 		btnNewButton_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (btnNewButton_1.isEnabled()) {
-				Image imagen = null;
-				JFileChooser fc = new JFileChooser();
+					Image imagen = null;
+					JFileChooser fc = new JFileChooser();
 
-				
-				java.awt.Component frame = null;
-				
-				
-				
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images","jpg","png");
-		        fc.addChoosableFileFilter(filter);
-		        int option = fc.showSaveDialog(null);
-				
-				if(option == JFileChooser.APPROVE_OPTION){
+					java.awt.Component frame = null;
+
+					FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg", "png");
+					fc.addChoosableFileFilter(filter);
+					int option = fc.showSaveDialog(null);
+
+					if (option == JFileChooser.APPROVE_OPTION) {
 						File file = fc.getSelectedFile();
 						String path = file.getAbsolutePath();
 						ruta_imagen = path;
 						ImageIcon imagen1 = new ImageIcon(path);
 						Image imagen_escalada = imagen1.getImage();
-						imagen_escalada = imagen_escalada.getScaledInstance(200, 200,  java.awt.Image.SCALE_SMOOTH);
+						imagen_escalada = imagen_escalada.getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH);
 						ImageIcon img = new ImageIcon(imagen_escalada);
-				        imagen_placeholder.setIcon(img);
-					
+						imagen_placeholder.setIcon(img);
 
-				}else{
+					} else {
 
-				}
+					}
 				}
 			}
 		});
@@ -119,10 +115,41 @@ public class VentanaCrearPublicacion extends Pantalla {
 
 		JButton botonTelegram = new JButton("Telegram");
 		botonTelegram.setEnabled(false);
-		botonTelegram.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		
+			botonTelegram.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					/*Solamente podemos publicar si se ha realizado una publicacion
+					 * De lo contrario el boton de telegram permanecera desabilitado
+					 */
+					if (botonTelegram.isEnabled()) {
+					// Si el boton fue clickeado mandar un mensaje de confirmacion
+					// y mandar a llamar al metodo
+					int input = JOptionPane.showConfirmDialog(null, "Deseas Publicar en Telegram", null,
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+					if (input == 0) {
+						//Desabilitamos el boton despues de confirmar la peticion de reenviado
+						botonTelegram.setEnabled(false);
+						/*
+						 * Como implementamos que se manda una exception si no se publica se 
+						 * encerro al codigo en un try/catch
+						 */
+						try {
+							controlador.difundirTelegram();
+							// Muestra mensaje de exito al retransitir en Telegram
+							JOptionPane.showConfirmDialog(null, "Se publico en el Grupo de Telegram", "Confirmado",
+									JOptionPane.DEFAULT_OPTION);
+						} catch (TelegramApiException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+				}
+			});
+
 
 		JButton btnNewButton = new JButton("Publicar");
 		publicar = btnNewButton;
@@ -130,21 +157,23 @@ public class VentanaCrearPublicacion extends Pantalla {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (btnNewButton.isEnabled()) {
-				String texto = null;
-						texto = textArea.getText();
-						if (texto.length()!=0) {
-							int input = JOptionPane.showConfirmDialog(null, "Deseas Publicar");
-					        // 0=yes, 1=no, 2=cancel
-					        if (input == 0) {
-					        	if(imagen_placeholder.getIcon()!= null) {
-					
-					        	controlador.crearPublicacion(ruta_imagen,texto);
-					        	}else {
-					        		controlador.crearPublicacion(null,texto);
-					        	}
-					        }
-							botonTelegram.setEnabled(true);
+					String texto = null;
+					texto = textArea.getText();
+					if (texto.length() != 0) {
+						int input = JOptionPane.showConfirmDialog(null, "Deseas Publicar");
+						// 0=yes, 1=no, 2=cancel
+						if (input == 0) {
+							if (imagen_placeholder.getIcon() != null) {
+
+								controlador.crearPublicacion(ruta_imagen, texto);
+							} else {
+								controlador.crearPublicacion(null, texto);
+							}
 						}
+						//Se limpia la caja de texto despues de una publicacion
+						textArea.setText("");
+						botonTelegram.setEnabled(true);
+					}
 				}
 			}
 		});
@@ -163,7 +192,6 @@ public class VentanaCrearPublicacion extends Pantalla {
 		gbc_btnNewButton.gridx = 1;
 		gbc_btnNewButton.gridy = 4;
 		add(btnNewButton, gbc_btnNewButton);
-
 
 		GridBagConstraints gbc_botonTelegram = new GridBagConstraints();
 		gbc_botonTelegram.insets = new Insets(0, 0, 0, 5);

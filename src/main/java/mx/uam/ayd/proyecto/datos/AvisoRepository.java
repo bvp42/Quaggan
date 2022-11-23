@@ -12,6 +12,7 @@ public interface AvisoRepository extends CrudRepository<Aviso, Long> {
 	
 
 	public List<Aviso> findAll();
+	
 
 	
 
