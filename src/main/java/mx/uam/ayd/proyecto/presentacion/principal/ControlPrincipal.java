@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.Empleado;
 import mx.uam.ayd.proyecto.presentacion.agendarCita.ControlAgendarCita;
+import mx.uam.ayd.proyecto.presentacion.comentarios.ControlEnviarComentario;
 import mx.uam.ayd.proyecto.presentacion.consultarAvisos.ControlConsultarAvisos;
 import mx.uam.ayd.proyecto.presentacion.consultarCitas.ControlConsultarCitas;
 import mx.uam.ayd.proyecto.presentacion.crearPublicacion.ControlCrearPublicacion;
@@ -40,6 +41,9 @@ public class ControlPrincipal {
 
 	@Autowired
 	private ControlProcesarTramites controlProcesarTramites;
+
+	@Autowired
+	private ControlEnviarComentario controlEnviarComentario;
 
 	@Autowired
 	private VentanaPrincipal ventana;
@@ -113,5 +117,14 @@ public class ControlPrincipal {
 		else if (empleado != null)
 			controlCrearPublicacion.inicia(empleado);
 
+	}
+
+	public void comentarios() {
+		if (agremiado != null)
+			//controlConsultarAvisos.inicia(agremiado);
+			controlEnviarComentario.inicia();
+		else if (empleado != null)
+			//controlCrearPublicacion.inicia(empleado);
+			System.out.print("comentario empleado ");
 	}
 }

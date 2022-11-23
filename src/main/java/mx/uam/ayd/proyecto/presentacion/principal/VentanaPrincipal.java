@@ -99,6 +99,21 @@ public class VentanaPrincipal extends JFrame {
 		gbc_btnCitas.gridx = 0;
 		gbc_btnCitas.gridy = 2;
 		panel.add(btnCitas, gbc_btnCitas);
+
+		//agrega boton de comentarios
+		JButton btnComentarios = new JButton("Comentarios");
+		btnComentarios.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				//llamar al controlador de comentarios
+				control.comentarios();
+			}
+		});
+		GridBagConstraints gbc_btnComentarios = new GridBagConstraints();
+		gbc_btnComentarios.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnComentarios.gridx = 0;
+		gbc_btnComentarios.gridy = 6;
+		panel.add(btnComentarios, gbc_btnComentarios);
 		
 		JButton btnPublicaciones = new JButton("Publicaciones");
 		btnPublicaciones.addMouseListener(new MouseAdapter() {
