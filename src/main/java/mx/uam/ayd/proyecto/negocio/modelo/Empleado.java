@@ -20,6 +20,8 @@ public class Empleado {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String contraseña;
+
     private String nombre;
 
     private String apellidos;

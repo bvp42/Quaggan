@@ -1,5 +1,4 @@
 package mx.uam.ayd.proyecto.datos;
-
 import mx.uam.ayd.proyecto.negocio.modelo.Empleado;
 import org.springframework.data.repository.CrudRepository;
 
@@ -20,12 +19,9 @@ public interface RepositoryEmpleado extends CrudRepository<Empleado, Long> {
 	 * @return
 	 */
 	public Empleado findByNombre(String nombre);
-	/**
-	 * Encuentra un Empleado a partir de su jerarquia
-	 * 
-	 * @param tipoEmpleado
-	 * @return
-	 */
+	
+	
 	public Empleado findByTipoEmpleado(String tipoEmpleado);
-
+	public boolean existsByContraseñaAndNombre(String contraseña,String nombre);
+	public Empleado findByContraseñaAndNombre(String contraseña,String nombre);
 }
