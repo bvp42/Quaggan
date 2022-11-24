@@ -238,6 +238,6 @@ public class ProyectoApplication {
 
 
 
-		// servicioDatosPrueba.generarDatos();
+		servicioDatosPrueba.generarDatos();
 	}
 }
