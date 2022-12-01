@@ -7,9 +7,12 @@ import mx.uam.ayd.proyecto.datos.RepositoryCita;
 import mx.uam.ayd.proyecto.negocio.ServicioCita;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.Cita;
+import mx.uam.ayd.proyecto.presentacion.Login.ControlLogin;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -37,10 +40,15 @@ public class ServicioDatosPrueba {
     @Autowired
     ServicioCita servicioCita;
 
-    public Agremiado generaAgremiado(){
+    @Autowired
+    ControlLogin controlLogin;
+
+    public Agremiado generaAgremiado() throws NoSuchAlgorithmException{
+        String password = faker.internet().password();
         var agremiado = new Agremiado();
         agremiado.setClave(faker.bothify("##########??##??###.######", true));
         agremiado.setNombre(faker.name().firstName());
+        agremiado.setPassword(controlLogin.encriptar(password));
         agremiado.setApellidos(faker.name().lastName() + " " + faker.name().lastName());
         agremiado.setAdscripcion(faker.educator().secondarySchool());
         agremiado.setCelular(faker.phoneNumber().cellPhone());
@@ -50,6 +58,7 @@ public class ServicioDatosPrueba {
         agremiado.setPuesto(faker.job().position());
         agremiado.setTelefono(faker.phoneNumber().phoneNumber());
         agremiado.setTurno(faker.random().nextBoolean() ? "MATUTINO" : "VESPERTINO");
+        System.out.println(agremiado.getNombre()+"-----------"+password+"----------"+agremiado.getClave());
         return agremiado;
     }
 
@@ -77,7 +86,7 @@ public class ServicioDatosPrueba {
         return cita;
     }
 
-    public void generarDatos(){
+    public void generarDatos() throws NoSuchAlgorithmException{
         log.info("Generando datos para la BD...");
 
         var agremiados = new ArrayList<Agremiado>();

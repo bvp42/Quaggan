@@ -82,6 +82,7 @@ public class VentanaInicio extends Pantalla {
 
 		setVisible(true);
 	}
+	
 	//Muestra que rol ha iniciado sesion
 	public void ActualizaVentanaInicio(String rol){
 		lblSesion.setText("Ustes ha iniciado sesión como "+ rol);

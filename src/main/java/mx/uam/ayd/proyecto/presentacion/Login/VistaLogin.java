@@ -16,10 +16,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
 
-import mx.uam.ayd.proyecto.presentacion.agendarCita.VentanaAgendarCita;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 import mx.uam.ayd.proyecto.presentacion.principal.ControlPrincipal;
-import mx.uam.ayd.proyecto.presentacion.principal.VentanaInicio;
 
 @SuppressWarnings("serial")
 @Component
@@ -42,7 +40,6 @@ public class VistaLogin extends Pantalla {
 	String clave;
 
 	public VistaLogin() {
-		VentanaInicio ventanaInicio;
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 71, 156, 0, 0, 0};
@@ -76,7 +73,7 @@ public class VistaLogin extends Pantalla {
 		gbcTfUsuario.gridy = 1;
 		add(tfUsuario,gbcTfUsuario);
 
-		lblClave = new JLabel("Clave");
+		lblClave = new JLabel("Contraseña");
 		GridBagConstraints gbcClave = new GridBagConstraints();
 		gbcClave.gridwidth = 1;
 		gbcClave.insets = new Insets(0, 0, 5, 5);
@@ -137,6 +134,7 @@ public class VistaLogin extends Pantalla {
 		});
 		
 	}
+	
 	
 	public void muestra(ControlPrincipal controlPrincipal) {
 		this.controlPrincipal = controlPrincipal;
