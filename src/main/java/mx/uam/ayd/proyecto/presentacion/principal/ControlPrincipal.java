@@ -15,6 +15,7 @@ import mx.uam.ayd.proyecto.presentacion.consultarAvisos.ControlConsultarAvisos;
 import mx.uam.ayd.proyecto.presentacion.consultarCitas.ControlConsultarCitas;
 import mx.uam.ayd.proyecto.presentacion.crearPublicacion.ControlCrearPublicacion;
 import mx.uam.ayd.proyecto.presentacion.procesarTramites.ControlProcesarTramites;
+import mx.uam.ayd.proyecto.presentacion.responderComentario.ControlResponderComentario;
 import mx.uam.ayd.proyecto.presentacion.solicitarTramites.ControlSolicitarTramites;
 
 /**
@@ -47,6 +48,9 @@ public class ControlPrincipal {
 
 	@Autowired
 	private ControlEnviarComentario controlEnviarComentario;
+
+	@Autowired
+	private ControlResponderComentario controlResponderComentario;
 
 	@Autowired
 	private VentanaPrincipal ventana;
@@ -127,10 +131,8 @@ public class ControlPrincipal {
 
 	public void comentarios() {
 		if (agremiado != null)
-			//controlConsultarAvisos.inicia(agremiado);
 			controlEnviarComentario.inicia();
 		else if (empleado != null)
-			//controlCrearPublicacion.inicia(empleado);
-			System.out.print("comentario empleado ");
+			controlResponderComentario.inicia();
 	}
 }

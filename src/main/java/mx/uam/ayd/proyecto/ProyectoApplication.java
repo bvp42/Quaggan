@@ -16,6 +16,7 @@ import mx.uam.ayd.proyecto.datos.RepositoryAgremiado;
 import mx.uam.ayd.proyecto.datos.RepositoryEmpleado;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.Aviso;
+import mx.uam.ayd.proyecto.negocio.modelo.Comentario;
 import mx.uam.ayd.proyecto.negocio.modelo.Empleado;
 import mx.uam.ayd.proyecto.util.ServicioDatosPrueba;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 import mx.uam.ayd.proyecto.datos.AvisoRepository;
+import mx.uam.ayd.proyecto.datos.ComentarioRepository;
 import mx.uam.ayd.proyecto.datos.RepositoryDocumento;
 import mx.uam.ayd.proyecto.datos.RepositorySolicitudTramite;
 import mx.uam.ayd.proyecto.datos.RepositoryTipoTramite;
@@ -67,6 +69,9 @@ public class ProyectoApplication {
 
 	@Autowired
 	RepositoryAgremiado repositoryAgremiado;
+
+	@Autowired
+	ComentarioRepository comentarioRepository;
 
 	@Autowired
 	RepositoryEmpleado repositoryEmpleado;
@@ -115,6 +120,30 @@ public class ProyectoApplication {
 	 * 
 	 */
 	public void inicializaBD() throws IOException, NoSuchAlgorithmException {
+		/***** Datos para Comentarios *****/
+		Comentario comentario1 = new Comentario();
+		comentario1.setIdComentario(1);
+		comentario1.setFecha("01 dic 2022");
+		comentario1.setContenido("comentario 1 de prueba");
+		comentario1.setRespuesta("");
+		comentario1.setEstado("Sin revisar");
+		comentarioRepository.save(comentario1);
+
+		Comentario comentario2 = new Comentario();
+		comentario2.setIdComentario(2);
+		comentario2.setFecha("15 Ene 2021");
+		comentario2.setContenido("comentario 2 de prueba");
+		comentario2.setRespuesta("");
+		comentario2.setEstado("Sin revisar");
+		comentarioRepository.save(comentario2);
+
+		Comentario comentario3 = new Comentario();
+		comentario3.setIdComentario(3);
+		comentario3.setFecha("08 Jun 2000");
+		comentario3.setContenido("comentario 3 de prueba");
+		comentario3.setRespuesta("");
+		comentario3.setEstado("Sin revisar");
+		comentarioRepository.save(comentario3);
 
 		/***** Datos para Agremiado *****/
 		Agremiado empleado1 = new Agremiado();
