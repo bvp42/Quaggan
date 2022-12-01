@@ -22,6 +22,8 @@ public class Agremiado {
     private String clave;
     
     private String nombre;
+    
+    private String password;
 
     private String apellidos;
 

@@ -1,12 +1,15 @@
 package mx.uam.ayd.proyecto.presentacion.principal;
 import java.security.NoSuchAlgorithmException;
 
+import javax.swing.JOptionPane;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.Empleado;
+import mx.uam.ayd.proyecto.presentacion.AgregarAgremiado.ControlAgregarAgremiado;
 import mx.uam.ayd.proyecto.presentacion.Login.ControlLogin;
 import mx.uam.ayd.proyecto.presentacion.Login.VistaLogin;
 import mx.uam.ayd.proyecto.presentacion.agendarCita.ControlAgendarCita;
@@ -60,9 +63,12 @@ public class ControlPrincipal {
 	private Agremiado agremiado;
 	
 	private Empleado empleado;
+	
 	@Autowired
 	ControlLogin controlLogin;
 	
+	@Autowired
+	ControlAgregarAgremiado controlAgregarAgremiado;
 	/**
 	 * Inicia el flujo de control de la ventana principal
 	 * 
@@ -88,12 +94,18 @@ public class ControlPrincipal {
 		this.empleado = empleado;
 		ventanaInicio.muestra(this);
 		ventanaInicio.ActualizaVentanaInicio(empleado.getTipoEmpleado());
+		ventana.setVisibleBtnAgregarAgremiado(true);
 	}
 
 	public void cerrarSesion(){
 		empleado = null;
 		agremiado = null;
+		ventana.setVisibleBtnAgregarAgremiado(false);
 	} 
+
+	public void agregarAgremiado(){
+		controlAgregarAgremiado.inicia();
+	}
 
 	public void procesarTramites() {
 		controlProcesarTramites.inicia();
