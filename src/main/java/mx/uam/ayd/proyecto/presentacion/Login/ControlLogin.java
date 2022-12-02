@@ -36,7 +36,7 @@ public class ControlLogin {
             datosValidos = servicioAgremiado.validarAgremiado(usuario, password);//Valida el usuario y la clave del agremiado 
             System.out.println(datosValidos);
             if (datosValidos){
-                controlPrincipal.loginAgremiado(servicioAgremiado.obtenerAgremiado(password));//Carga la vista del agremiado
+                controlPrincipal.loginAgremiado(servicioAgremiado.obtenerAgremiado(password,usuario));//Carga la vista del agremiado
             }else{
                 JOptionPane.showMessageDialog(null,"Datos incorrectos","Contraseña o usuario incorrenctos", 
                 JOptionPane.ERROR_MESSAGE);
