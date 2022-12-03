@@ -31,7 +31,7 @@ public class VentanaSolicitarTramites extends Pantalla {
             lblDocumentosSeleccionados_, lblNoSolicitud, lblNoSolicitud_, lblFechaSolicitud, lblFechaSolicitud_,
             lblTramiteSolicitado, lblTramiteSolicitado_, lblEstado, lblEstado_;
     private JButton btnSiguienteSolicitarTramite, btnAdjuntarDocumentos, btnCancelarAdjuntarDocumetos,
-            btnEnviarSolicitud;
+            btnEnviarSolicitud, btnDescargarDocumentoTramite, btnAceptarTramite, btnSolicitarCorreccion;
     private JComboBox<String> comboBoxTramitesDisponibles;
     private List<TipoTramite> listaTramites;
     private JList<String> jListRequerimientos;
@@ -219,6 +219,31 @@ public class VentanaSolicitarTramites extends Pantalla {
         gbc.gridwidth = 1;
         panelTramiteActivo.add(lblEstado_, gbc);
 
+        btnDescargarDocumentoTramite = new JButton("Descargar documento de trámite");
+        btnDescargarDocumentoTramite.setFont(new Font("Arial", Font.ITALIC, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
+        panelTramiteActivo.add(btnDescargarDocumentoTramite, gbc);
+
+        btnAceptarTramite = new JButton("Aceptar trámite");
+        btnAceptarTramite.setFont(new Font("Arial", Font.ITALIC, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(btnAceptarTramite, gbc);
+
+        btnSolicitarCorreccion = new JButton("Solicitar corrección");
+        btnSolicitarCorreccion.setFont(new Font("Arial", Font.ITALIC, 15));
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(btnSolicitarCorreccion, gbc);
+
+
         /* ACTION LISTENERS */
         comboBoxTramitesDisponibles.addActionListener(e -> actualizarListaRequerimientos());
 
@@ -289,6 +314,20 @@ public class VentanaSolicitarTramites extends Pantalla {
         lblFechaSolicitud_.setText(String.valueOf(solicitudActiva.getFechaSolicitud()).substring(0,19));
         lblTramiteSolicitado_.setText(solicitudActiva.getTipoTramite().getNombreTramite());
         lblEstado_.setText(solicitudActiva.getEstado());
+
+        switch (solicitudActiva.getEstado()) {
+            case "Finalizado":
+                btnDescargarDocumentoTramite.setVisible(true);
+                btnAceptarTramite.setVisible(true);
+                btnSolicitarCorreccion.setVisible(true);
+                break;
+        
+            default:
+                btnDescargarDocumentoTramite.setVisible(false);
+                btnAceptarTramite.setVisible(false);
+                btnSolicitarCorreccion.setVisible(false);
+                break;
+        }
 
         setVisible(true);
 
