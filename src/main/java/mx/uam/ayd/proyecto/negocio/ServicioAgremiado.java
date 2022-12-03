@@ -16,12 +16,17 @@ public class ServicioAgremiado {
     RepositoryAgremiado repositoryAgremiado;
 
     public boolean validarAgremiado(String usuario,String password){
-        return repositoryAgremiado.existsByClaveAndNombre(password, usuario);
+        return repositoryAgremiado.existsByPasswordAndNombre(password, usuario);
     }
 
-    public Agremiado obtenerAgremiado(String clave){
-        return repositoryAgremiado.findByClave(clave);
+    public Agremiado obtenerAgremiado(String password,String usuario){
+        return repositoryAgremiado.findByPasswordAndNombre(password, usuario);
     }
+
+    public void registrarAgremiado(Agremiado agremiado ){
+        repositoryAgremiado.save(agremiado);
+    }
+    
     
     /**
      * Verifica si el agremiado con sesión iniciada tiene la posibilidad de

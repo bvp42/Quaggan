@@ -29,10 +29,10 @@ public class ServicioAgremiadoTest{
 
     @Test
     void validarAgremiado(){
-        agremiado1.setClave("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
+        agremiado1.setPassword("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
         agremiado1.setNombre("Alan");
 
-        when(repositoryAgremiado.existsByClaveAndNombre(agremiado1.getClave(), agremiado1.getNombre())).thenReturn(true);
+        when(repositoryAgremiado.existsByPasswordAndNombre(agremiado1.getPassword(), agremiado1.getNombre())).thenReturn(true);
         //Prueba 1: Valida datos con clave y nombre correctos
         datosCorrectos = servicioAgremiado.validarAgremiado("Alan", "cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
         assertTrue(datosCorrectos);
@@ -52,15 +52,15 @@ public class ServicioAgremiadoTest{
 
     @Test
     void obtenerAgremiado(){
-        agremiado1.setClave("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
+        agremiado1.setPassword("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
         agremiado1.setNombre("Alan");
 
-        when(repositoryAgremiado.findByClave(agremiado1.getClave())).thenReturn(agremiado1);
+        when(repositoryAgremiado.findByPasswordAndNombre(agremiado1.getPassword(),agremiado1.getNombre())).thenReturn(agremiado1);
         //Prueba 1: Clave correcta
-        agremiado2 = servicioAgremiado.obtenerAgremiado("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
+        agremiado2 = servicioAgremiado.obtenerAgremiado("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8","Alan");
         assertEquals(agremiado1, agremiado2);
         //Prueba 2: Clave incorrecta
-        agremiado2 = servicioAgremiado.obtenerAgremiado("db4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
+        agremiado2 = servicioAgremiado.obtenerAgremiado("db4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8", "Alan");
         assertNull(agremiado2);
     }
 }

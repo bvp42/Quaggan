@@ -209,7 +209,8 @@ public class ProyectoApplication {
 		solicitudTramiteRepository.save(solicitud3);
 
 		var agremiado = new Agremiado();
-		agremiado.setClave(controlPrincipal.encriptada("."));
+		agremiado.setClave("1854265");
+		agremiado.setPassword(controlPrincipal.encriptada("."));
 		agremiado.setNombre("Alan");
 		agremiado.setApellidos("Turing");
 		agremiado.setAccesoATramites(true);
@@ -234,10 +235,6 @@ public class ProyectoApplication {
 		aviso2.setContenido("Prueba 2");
 		aviso2.setFecha("2222-09-22");
 		repositoryAviso.save(aviso2);
-
-
-
-
 		servicioDatosPrueba.generarDatos();
 	}
 }

@@ -1,8 +1,10 @@
 package mx.uam.ayd.proyecto.presentacion.principal;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.MouseInputAdapter;
 
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,7 @@ public class VentanaPrincipal extends JFrame {
 	private java.awt.Component componente;
 
 	GridBagConstraints gbc_contenido;
+	JButton btnAgregarAgremiado;
 
 	/**
 	 * Create the frame.
@@ -101,6 +104,23 @@ public class VentanaPrincipal extends JFrame {
 		gbc_btnCitas.gridy = 2;
 		panel.add(btnCitas, gbc_btnCitas);
 
+		//Agrega boton de Agregare agremiado
+		btnAgregarAgremiado = new JButton("Agregar Agremiado");
+		btnAgregarAgremiado.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e){
+				control.agregarAgremiado();			
+			}
+		});
+
+		GridBagConstraints gbc_btnAgregarAgremiado = new GridBagConstraints();
+		gbc_btnAgregarAgremiado.insets = new Insets(0, 0, 5, 0);
+		gbc_btnAgregarAgremiado.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnAgregarAgremiado.gridx = 0;
+		gbc_btnAgregarAgremiado.gridy = 4;
+		panel.add(btnAgregarAgremiado, gbc_btnAgregarAgremiado);
+		btnAgregarAgremiado.setVisible(false);
+		
 		//agrega boton de comentarios
 		JButton btnComentarios = new JButton("Comentarios");
 		btnComentarios.addMouseListener(new MouseAdapter() {
@@ -154,5 +174,9 @@ public class VentanaPrincipal extends JFrame {
 	public void quitaComponente(java.awt.Component componente){
 		contentPane.remove(componente);
 		repaint();
+	}
+
+	public void setVisibleBtnAgregarAgremiado(boolean visible){
+		btnAgregarAgremiado.setVisible(visible);
 	}
 }
