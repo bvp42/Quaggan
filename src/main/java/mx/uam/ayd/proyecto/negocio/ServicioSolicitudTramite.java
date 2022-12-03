@@ -185,7 +185,7 @@ public class ServicioSolicitudTramite {
      * @throws IllegalArgumentException
      */
     public Agremiado enviarSolicitud(TipoTramite tipoTramiteSeleccionado, Path[] listaPaths, Agremiado agremiado)
-            throws IOException, IllegalArgumentException {
+            throws IOException, IllegalArgumentException, ArrayIndexOutOfBoundsException {
 
         if ((tipoTramiteSeleccionado == null) || (listaPaths == null) || (agremiado == null)) {
             throw new IllegalArgumentException("Argumento nulo no válido");
@@ -220,6 +220,10 @@ public class ServicioSolicitudTramite {
         } catch (IOException e) {
            throw e;
         } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw e;
+        } catch (Exception e) {
             throw e;
         }
 

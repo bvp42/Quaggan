@@ -272,9 +272,9 @@ public class VentanaProcesarTramites extends Pantalla {
         lblEstado.setText("Estado de la solicitud: " + solicitudSeleccionada.getEstado());
         lblTipo.setText("Trámite solicitado: " + solicitudSeleccionada.getTipoTramite().getNombreTramite());
 
-        lblSolicitante.setText("Solicitante: " + solicitudSeleccionada.getSolicitante().getNombre() + " "
-                + solicitudSeleccionada.getSolicitante().getApellidos() + " ("
-                + solicitudSeleccionada.getSolicitante().getClave() + ")");
+        // lblSolicitante.setText("Solicitante: " + solicitudSeleccionada.getSolicitante().getNombre() + " "
+        //         + solicitudSeleccionada.getSolicitante().getApellidos() + " ("
+        //         + solicitudSeleccionada.getSolicitante().getClave() + ")");
 
         documentosAdjuntos = solicitudSeleccionada.getRequisitos();
 
@@ -321,9 +321,9 @@ public class VentanaProcesarTramites extends Pantalla {
         lblEstado.setText("Estado de la solicitud: " + solicitudSeleccionada.getEstado());
         lblTipo.setText("Trámite solicitado: " + solicitudSeleccionada.getTipoTramite().getNombreTramite());
 
-        lblSolicitante.setText("Solicitante: " + solicitudSeleccionada.getSolicitante().getNombre() + " "
-                + solicitudSeleccionada.getSolicitante().getApellidos() + " ("
-                + solicitudSeleccionada.getSolicitante().getClave() + ")");
+        // lblSolicitante.setText("Solicitante: " + solicitudSeleccionada.getSolicitante().getNombre() + " "
+        //         + solicitudSeleccionada.getSolicitante().getApellidos() + " ("
+        //         + solicitudSeleccionada.getSolicitante().getClave() + ")");
 
         documentosAdjuntos = solicitudSeleccionada.getRequisitos();
 
@@ -369,9 +369,9 @@ public class VentanaProcesarTramites extends Pantalla {
         lblEstado.setText("Estado de la solicitud: " + solicitudSeleccionada.getEstado());
         lblTipo.setText("Trámite solicitado: " + solicitudSeleccionada.getTipoTramite().getNombreTramite());
 
-        lblSolicitante.setText("Solicitante: " + solicitudSeleccionada.getSolicitante().getNombre() + " "
-                + solicitudSeleccionada.getSolicitante().getApellidos() + " ("
-                + solicitudSeleccionada.getSolicitante().getClave() + ")");
+        // lblSolicitante.setText("Solicitante: " + solicitudSeleccionada.getSolicitante().getNombre() + " "
+        //         + solicitudSeleccionada.getSolicitante().getApellidos() + " ("
+        //         + solicitudSeleccionada.getSolicitante().getClave() + ")");
 
         documentosAdjuntos = new ArrayList<Documento> ();
 
@@ -416,9 +416,9 @@ public class VentanaProcesarTramites extends Pantalla {
         lblEstado.setText("Estado de la solicitud: " + solicitudSeleccionada.getEstado());
         lblTipo.setText("Trámite solicitado: " + solicitudSeleccionada.getTipoTramite().getNombreTramite());
 
-        lblSolicitante.setText("Solicitante: " + solicitudSeleccionada.getSolicitante().getNombre() + " "
-                + solicitudSeleccionada.getSolicitante().getApellidos() + " ("
-                + solicitudSeleccionada.getSolicitante().getClave() + ")");
+        // lblSolicitante.setText("Solicitante: " + solicitudSeleccionada.getSolicitante().getNombre() + " "
+        //         + solicitudSeleccionada.getSolicitante().getApellidos() + " ("
+        //         + solicitudSeleccionada.getSolicitante().getClave() + ")");
 
         panelDatosSolicitud.setVisible(true);
 

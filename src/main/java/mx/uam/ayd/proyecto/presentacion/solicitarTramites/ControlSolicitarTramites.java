@@ -11,6 +11,7 @@ import mx.uam.ayd.proyecto.negocio.ServicioAgremiado;
 import mx.uam.ayd.proyecto.negocio.ServicioSolicitudTramite;
 import mx.uam.ayd.proyecto.negocio.ServicioTipoTramite;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
+import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
 
 /**
@@ -47,7 +48,8 @@ public class ControlSolicitarTramites {
             List<TipoTramite> tramites = servicioTipoTramite.findAll();
             ventana.ventanaSolicitarTramite(agremiado, tramites, this);
         } else {
-            ventana.ventanaTramiteActivo(agremiado, this);
+            SolicitudTramite solicitudTramite = servicioAgremiado.getSolicitudActiva(agremiado);
+            ventana.ventanaTramiteActivo(agremiado, solicitudTramite, this);
         }
 
     }
@@ -71,18 +73,21 @@ public class ControlSolicitarTramites {
      * @throws IllegalArgumentException
      */
     void enviarSolicitud(TipoTramite tipoTramiteSeleccionado, Path[] listaPaths, Agremiado agremiado)
-            throws IOException, IllegalArgumentException {
+            throws IOException, IllegalArgumentException, ArrayIndexOutOfBoundsException {
 
         try {
 
             Agremiado agremiadoActualizado = servicioSolicitudTramite.enviarSolicitud(tipoTramiteSeleccionado,
                     listaPaths, agremiado);
+            SolicitudTramite solicitudActiva = servicioAgremiado.getSolicitudActiva(agremiadoActualizado);
 
-            ventana.ventanaTramiteActivo(agremiadoActualizado, this);
+            ventana.ventanaTramiteActivo(agremiadoActualizado, solicitudActiva, this);
 
         } catch (IOException e) {
             throw e;
         } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (ArrayIndexOutOfBoundsException e) {
             throw e;
         }
 
