@@ -13,8 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-
+import java.security.NoSuchAlgorithmException;
 import java.awt.GridBagConstraints;
 
 @Component
@@ -145,7 +144,6 @@ public class VistaAgregarAgremiado extends Pantalla{
 			@Override
 			public void mouseClicked(MouseEvent e){
 				borrar();
-				
 			}
 		});
 
@@ -165,8 +163,18 @@ public class VistaAgregarAgremiado extends Pantalla{
 				datos[5].equals("")||datos[6].equals("")){
 					JOptionPane.showMessageDialog(btnAceptar,"Lllene todos los campos","", 1); 
 				}else{
-					controlAgregarAgremiado.AgregarAgremiado(datos);
-					borrar();
+					boolean seRegistro;
+					try {
+						seRegistro = controlAgregarAgremiado.AgregarAgremiado(datos);
+						if (seRegistro){
+							JOptionPane.showMessageDialog(null,"Su registrio fue exitoso", "Registro Agremiado", 1);	
+							borrar();
+						}
+						
+					} catch (NoSuchAlgorithmException e1) {
+						e1.printStackTrace();
+					}
+					
 				}
 			}
 		});
@@ -183,7 +191,6 @@ public class VistaAgregarAgremiado extends Pantalla{
 		tfPassword.setText("");
 		
 	}
-
 	public void muestra(ControlAgregarAgremiado controlAgregarAgremiado) {
 		this.controlAgregarAgremiado = controlAgregarAgremiado;
 		setVisible(true);
