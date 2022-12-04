@@ -1,12 +1,9 @@
 package mx.uam.ayd.proyecto.presentacion.AgregarAgremiado;
-import org.checkerframework.checker.units.qual.g;
-import org.springframework.stereotype.Component;
 
-import antlr.debug.Event;
+import org.springframework.stereotype.Component;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -15,24 +12,23 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.security.NoSuchAlgorithmException;
 import java.awt.GridBagConstraints;
+import mx.uam.ayd.proyecto.util.validarCampo;
 
 @Component
 public class VistaAgregarAgremiado extends Pantalla{
 
-    ControlAgregarAgremiado controlAgregarAgremiado;
-
-    private final JLabel lblBienvenida;
-    
-    private JLabel lblClave;    
-    private JTextField tfClave;
+	ControlAgregarAgremiado controlAgregarAgremiado;	
+	private final JLabel lblBienvenida;
+	private JLabel lblClave;
+	private validarCampo tfClave;    
     private JLabel lblNombre;    
     private JTextField tfNombre;
     private JLabel lblApellidos;
     private JTextField tfApellidos;
     private JLabel lblCel;
-    private JTextField tfCel;
+    private validarCampo tfCel;
     private JLabel lblCorreo;
-    private JTextField tfCorreo;
+    private validarCampo tfCorreo;
     private JLabel lblDomicilio;
     private JTextField tfDomicilio;
     private JLabel lblPassword;
@@ -52,7 +48,7 @@ public class VistaAgregarAgremiado extends Pantalla{
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.anchor =GridBagConstraints.CENTER;
 		add(lblBienvenida,gbc);
-		
+		//Agrega la etiqueta para la clave
 		lblClave = new JLabel("Clave");
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -61,14 +57,15 @@ public class VistaAgregarAgremiado extends Pantalla{
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.anchor =GridBagConstraints.EAST;
 		add(lblClave,gbc);
-		
-		tfClave = new JTextField();
+		//Valida con una expresión regular la clave. Es una cadena de 19 números y mayúsculas, seguda de un punto y 9 números 
+		tfClave = new validarCampo("[0-9A-Z]{19}+.+[0-9]{6}");
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		gbc.gridwidth = 3;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		add(tfClave,gbc);
-
+		tfClave.setToolTipText("Solo números y letras mayúsculas");
+		//Agrega la etiqueta para el nombre
 		lblNombre = new JLabel("Nombre");
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -78,7 +75,7 @@ public class VistaAgregarAgremiado extends Pantalla{
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		add(tfNombre,gbc);
-		
+		//Agrega la etiqueta para los apellidos
 		lblApellidos = new JLabel("Apellidos");
 		gbc.gridx = 0;
 		gbc.gridy = 3;
@@ -88,27 +85,28 @@ public class VistaAgregarAgremiado extends Pantalla{
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		add(tfApellidos,gbc);
-		
+		//Agrega la etiqueta para el número de celular 
 		lblCel = new JLabel("Tel. Cel.");
 		gbc.gridx = 0;
 		gbc.gridy = 4;
 		add(lblCel,gbc);
-		
-		tfCel = new JTextField();
+		// Valida que solo sean numeros de 10 dígitos
+		tfCel = new validarCampo("[0-9]{10}");
 		gbc.gridx = 1;
 		gbc.gridy = 4;
 		add(tfCel,gbc);
-		
+		//Agrega la etiqueta para el correo 
 		lblCorreo = new JLabel("Gmail");
 		gbc.gridx = 0;
 		gbc.gridy = 5;
 		add(lblCorreo,gbc);
-
-		tfCorreo = new JTextField();
+		//Valida que solo sean correos de gmail
+		tfCorreo = new validarCampo("[.0-9a-zA-z]{2,100}+@gmail.com$");
 		gbc.gridx = 1;
 		gbc.gridy = 5;
 		add(tfCorreo,gbc);
-		
+		tfCorreo.setToolTipText("Solo se admiten correos de gmail");
+		//Agrega la etiqueta para el domicilio
 		lblDomicilio = new JLabel("Domicilio");
 		gbc.gridx = 0;
 		gbc.gridy = 6;
@@ -118,7 +116,7 @@ public class VistaAgregarAgremiado extends Pantalla{
 		gbc.gridx = 1;
 		gbc.gridy = 6;
 		add(tfDomicilio,gbc);
-
+		//Agrega la etiqueta para la contraseña
 		lblPassword = new JLabel("Contraseña");
 		gbc.gridx = 0;
 		gbc.gridy = 7;
@@ -128,12 +126,12 @@ public class VistaAgregarAgremiado extends Pantalla{
 		gbc.gridx = 2;
 		gbc.gridy = 7;
 		add(tfPassword,gbc);
-		
+		//Agrega ell boton para registrar el agremiado
 		btnAceptar = new JButton("Aceptar");
 		gbc.gridx = 0;
 		gbc.gridy = 8;
 		add(btnAceptar,gbc);
-		
+		//Agrega el boton para borrar lo que hay en los campos
 		btnBorrar = new JButton("Borrar");
 		gbc.gridx = 2;
 		gbc.gridy = 8;
@@ -150,6 +148,7 @@ public class VistaAgregarAgremiado extends Pantalla{
 		btnAceptar.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mouseClicked(MouseEvent e){
+				//Obtiene lo que hay en los campos de l registro
 				String[] datos = new String[7];
 				datos[0] = tfClave.getText();
 				datos[1] = tfNombre.getText();
@@ -158,10 +157,27 @@ public class VistaAgregarAgremiado extends Pantalla{
 				datos[4] = tfCorreo.getText();
 				datos[5] = tfDomicilio.getText();
 				datos[6] = tfPassword.getText();
-				System.out.println(datos[0]);
+				
+				//Valida que los campos no esten vacios
 				if (datos[0].equals("")||datos[1].equals("")||datos[2].equals("")||datos[3].equals("")||datos[4].equals("")||
 				datos[5].equals("")||datos[6].equals("")){
 					JOptionPane.showMessageDialog(btnAceptar,"Lllene todos los campos","", 1); 
+				}
+				//valida el campo del número de celular 
+				else if(!tfCel.Esvalido()){
+					JOptionPane.showMessageDialog(btnAceptar,"Solo se admiten numeros de 10 digitos.\nEj. 5585746525",
+					"Error en el campo Tel. cel.", 1);
+					tfCel.grabFocus();
+				// valida el correo  
+				}else if (!tfCorreo.Esvalido()){
+					JOptionPane.showMessageDialog(btnAceptar,"Solo se admiten correos de gmail.\nEj. pedro.torres@gmail.com",
+					"Error en el campo Correo", 1);
+					tfCorreo.grabFocus();
+				//valida que la clave tenga la nomenclatura 
+				}else if(!tfClave.Esvalido()){
+					JOptionPane.showMessageDialog(btnAceptar,"Solo se admiten número y letras mayusculas de tamaño 26.\nEj. 1306808971ZI30GM135.284733",
+					"Error en el campo Clave", 1);
+					tfCorreo.grabFocus();
 				}else{
 					boolean seRegistro;
 					try {
@@ -174,13 +190,12 @@ public class VistaAgregarAgremiado extends Pantalla{
 					} catch (NoSuchAlgorithmException e1) {
 						e1.printStackTrace();
 					}
-					
 				}
 			}
 		});
         
 	}
-
+	//Borra todos los campos
 	public void borrar(){
 		tfClave.setText("");		
 		tfNombre.setText("");

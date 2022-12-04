@@ -26,7 +26,12 @@ public class ControlAgregarAgremiado {
     public void inicia(){
         vistaAgregarAgremiado.muestra(this);
     }
-
+    /**
+    * @return boolean Indica si el registro fue exitoso
+    * @param datos Es un array de String que contiene los datos obtenidos en la vista 
+    * de agregar agremiado
+    * Crea un objeto Agremiado y le asigna los valores del parametro datos       
+    */
     public boolean AgregarAgremiado(String[] datos) throws NoSuchAlgorithmException{
         Agremiado agremiado = new Agremiado();
         agremiado.setClave(datos[0]);
@@ -38,7 +43,12 @@ public class ControlAgregarAgremiado {
         agremiado.setPassword(encriptar(datos[6]));
         return servicioAgremiado.registrarAgremiado(agremiado);
     }
-    
+    /**
+    * @return sha256 Cadena de 64 caracteres en hexadecimal(encriptación)
+    * @param contraseña  
+    * Encripta una cadena con el algoritmo SHA-256
+    * Crea un objeto Agremiado y le asigna los valores del parametro datos       
+    */
     public String encriptar(String contraseña) throws NoSuchAlgorithmException{
         
         MessageDigest md = MessageDigest.getInstance("SHA-256");
