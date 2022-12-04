@@ -2,13 +2,9 @@ package mx.uam.ayd.proyecto.presentacion.AgregarAgremiado;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import javax.swing.JOptionPane;
 import javax.xml.bind.DatatypeConverter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import mx.uam.ayd.proyecto.negocio.ServicioAgremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.presentacion.principal.ControlPrincipal;
@@ -17,6 +13,7 @@ import mx.uam.ayd.proyecto.presentacion.principal.ControlPrincipal;
 
 @Component
 public class ControlAgregarAgremiado {
+    
     @Autowired
     VistaAgregarAgremiado vistaAgregarAgremiado;
     @Autowired

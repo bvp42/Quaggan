@@ -34,11 +34,11 @@ public class ServicioAgremiado {
      */
     public boolean registrarAgremiado(Agremiado agremiado ){
         if (!repositoryAgremiado.existsByPassword(agremiado.getPassword())){
-            if(!repositoryAgremiado.existsById(agremiado.getClave())){
+            if(!repositoryAgremiado.existsByClave(agremiado.getClave())){
                 repositoryAgremiado.save(agremiado);
                 return true;
             }else{
-                JOptionPane.showMessageDialog(null,"La clave del agrmiado ya fue registrada", "Clave invalida", 0);
+                JOptionPane.showMessageDialog(null,"La clave del agremiado ya fue registrada", "Clave invalida", 0);
                 return false;
             }
         }else{

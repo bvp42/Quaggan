@@ -8,5 +8,5 @@ public interface RepositoryAgremiado extends CrudRepository<Agremiado, String> {
     public boolean existsByPassword(String password);
     public boolean existsByPasswordAndNombre(String password,String nombre);
     public Agremiado findByPasswordAndNombre(String password, String nombre);
-    public boolean existsById(String clave);
+    public boolean existsByClave(String clave);
 }
