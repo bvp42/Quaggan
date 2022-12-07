@@ -82,6 +82,12 @@ class ServicioAvisoTest {
 		assertThrows(NullPointerException.class, () -> servicioAviso.difundirTelegram());
 		
 	}
+	@Test
+	void testdifundirFacebook() {
+		//Prueba 7 Lanza una exception si aviso_publicacion es null;
+		assertThrows(NullPointerException.class, () -> servicioAviso.difundirTelegram());
+	}
+	
 	
 
 }

@@ -40,13 +40,16 @@ public class VentanaCrearPublicacion extends Pantalla {
 	private JButton btnimagen;
 	private JLabel imagen_p;
 	private String ruta_imagen;
+	private JButton telegram;
+	private JButton facebook;
 
 	public VentanaCrearPublicacion() {
 		setBounds(new Rectangle(100, 100, 500, 500));
+		setBounds(new Rectangle(100, 100, 500, 500));
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 40, 300, 40, 0 };
+		gridBagLayout.columnWidths = new int[] { 119, 60, 221, 0, 0, 40, 0 };
 		gridBagLayout.rowHeights = new int[] { 30, 200, 20, 147, 0, 40, 0 };
-		gridBagLayout.columnWeights = new double[] { 1.0, 1.0, 1.0, Double.MIN_VALUE };
+		gridBagLayout.columnWeights = new double[] { 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
 		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
 
@@ -59,7 +62,7 @@ public class VentanaCrearPublicacion extends Pantalla {
 		GridBagConstraints gbc_imagen_placeholder = new GridBagConstraints();
 		gbc_imagen_placeholder.fill = GridBagConstraints.VERTICAL;
 		gbc_imagen_placeholder.insets = new Insets(0, 0, 5, 5);
-		gbc_imagen_placeholder.gridx = 1;
+		gbc_imagen_placeholder.gridx = 2;
 		gbc_imagen_placeholder.gridy = 1;
 		add(imagen_placeholder, gbc_imagen_placeholder);
 
@@ -98,7 +101,7 @@ public class VentanaCrearPublicacion extends Pantalla {
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
 		gbc_btnNewButton_1.anchor = GridBagConstraints.EAST;
 		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_1.gridx = 1;
+		gbc_btnNewButton_1.gridx = 2;
 		gbc_btnNewButton_1.gridy = 2;
 		add(btnNewButton_1, gbc_btnNewButton_1);
 
@@ -106,7 +109,7 @@ public class VentanaCrearPublicacion extends Pantalla {
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 1;
+		gbc_scrollPane.gridx = 2;
 		gbc_scrollPane.gridy = 3;
 		add(scrollPane, gbc_scrollPane);
 
@@ -114,24 +117,26 @@ public class VentanaCrearPublicacion extends Pantalla {
 		scrollPane.setViewportView(textArea);
 
 		JButton botonTelegram = new JButton("Telegram");
+		telegram = botonTelegram;
 		botonTelegram.setEnabled(false);
-		
-			botonTelegram.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					/*Solamente podemos publicar si se ha realizado una publicacion
-					 * De lo contrario el boton de telegram permanecera desabilitado
-					 */
-					if (botonTelegram.isEnabled()) {
+
+		botonTelegram.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				/*
+				 * Solamente podemos publicar si se ha realizado una publicacion De lo contrario
+				 * el boton de telegram permanecera desabilitado
+				 */
+				if (botonTelegram.isEnabled()) {
 					// Si el boton fue clickeado mandar un mensaje de confirmacion
 					// y mandar a llamar al metodo
 					int input = JOptionPane.showConfirmDialog(null, "Deseas Publicar en Telegram", null,
 							JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 					if (input == 0) {
-						//Desabilitamos el boton despues de confirmar la peticion de reenviado
+						// Desabilitamos el boton despues de confirmar la peticion de reenviado
 						botonTelegram.setEnabled(false);
 						/*
-						 * Como implementamos que se manda una exception si no se publica se 
-						 * encerro al codigo en un try/catch
+						 * Como implementamos que se manda una exception si no se publica se encerro al
+						 * codigo en un try/catch
 						 */
 						try {
 							controlador.difundirTelegram();
@@ -147,9 +152,41 @@ public class VentanaCrearPublicacion extends Pantalla {
 						}
 					}
 				}
-				}
-			});
+			}
+		});
 
+		JButton botonFacebook = new JButton("Facebook");
+		facebook = botonFacebook;
+		botonFacebook.setEnabled(false);
+		//Se añade un mensaje que avisa la restriccion para facebook
+		botonFacebook.setToolTipText("Solo se puede publicar en Facebook avisos sin imagen");
+
+		botonFacebook.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				/*
+				 * Solamente podemos publicar si se ha realizado una publicacion De lo contrario
+				 * el boton de facebook permanecera desabilitado
+				 */
+				if (botonFacebook.isEnabled()) {
+					// Si el boton fue clickeado mandar un mensaje de confirmacion
+					// y mandar a llamar al metodo
+					int input = JOptionPane.showConfirmDialog(null, "Deseas Publicar en Facebook", null,
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+					if (input == 0) {
+						// Desabilitamos el boton despues de confirmar la peticion de reenviado
+						botonFacebook.setEnabled(false);
+						if (controlador.difundirFacebook() == true) {
+							// Muestra mensaje de exito al retransitir en Facebook
+							JOptionPane.showConfirmDialog(null, "Se publico en el Grupo de Facebook", "Confirmado",
+									JOptionPane.DEFAULT_OPTION);
+						}else {
+							JOptionPane.showConfirmDialog(null, "No se publico en el Grupo de Facebook", "Error",
+									JOptionPane.DEFAULT_OPTION);
+						}
+					}
+				}
+			}
+		});
 
 		JButton btnNewButton = new JButton("Publicar");
 		publicar = btnNewButton;
@@ -166,13 +203,18 @@ public class VentanaCrearPublicacion extends Pantalla {
 							if (imagen_placeholder.getIcon() != null) {
 
 								controlador.crearPublicacion(ruta_imagen, texto);
+								
 							} else {
 								controlador.crearPublicacion(null, texto);
+								// Solo se pueden hacer publicaciones sin imagenes en un grupo de facebook por
+								// la API
+								botonFacebook.setEnabled(true);
 							}
 						}
-						//Se limpia la caja de texto despues de una publicacion
+						// Se limpia la caja de texto despues de una publicacion
 						textArea.setText("");
 						botonTelegram.setEnabled(true);
+
 					}
 				}
 			}
@@ -184,20 +226,25 @@ public class VentanaCrearPublicacion extends Pantalla {
 		chckbxNewCheckBox.setSelected(false);
 		GridBagConstraints gbc_chckbxNewCheckBox = new GridBagConstraints();
 		gbc_chckbxNewCheckBox.insets = new Insets(0, 0, 5, 0);
-		gbc_chckbxNewCheckBox.gridx = 2;
+		gbc_chckbxNewCheckBox.gridx = 3;
 		gbc_chckbxNewCheckBox.gridy = 1;
 		add(chckbxNewCheckBox, gbc_chckbxNewCheckBox);
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton.gridx = 1;
+		gbc_btnNewButton.gridx = 2;
 		gbc_btnNewButton.gridy = 4;
 		add(btnNewButton, gbc_btnNewButton);
 
 		GridBagConstraints gbc_botonTelegram = new GridBagConstraints();
+		GridBagConstraints gbc_botonFacebook = new GridBagConstraints();
 		gbc_botonTelegram.insets = new Insets(0, 0, 0, 5);
 		gbc_botonTelegram.gridx = 1;
 		gbc_botonTelegram.gridy = 5;
+		gbc_botonFacebook.insets = new Insets(0, 0, 0, 5);
+		gbc_botonFacebook.gridx = 3;
+		gbc_botonFacebook.gridy = 5;
 		add(botonTelegram, gbc_botonTelegram);
+		add(botonFacebook, gbc_botonFacebook);
 
 	}
 
@@ -206,6 +253,9 @@ public class VentanaCrearPublicacion extends Pantalla {
 		validado.setSelected(false);
 		publicar.setEnabled(true);
 		btnimagen.setEnabled(true);
+		//Cada vez que se inicia la ventana se desactivan los botones de publicaciones
+		telegram.setEnabled(false);
+		facebook.setEnabled(false);
 		this.controlador = controlador;
 		setVisible(true);
 	}
@@ -216,6 +266,11 @@ public class VentanaCrearPublicacion extends Pantalla {
 		publicar.setEnabled(false);
 		btnimagen.setEnabled(false);
 		imagen_p.setIcon(null);
+	}
+
+	public void mensajeNoSePuedeEnviar() {
+		// TODO Auto-generated method stub
+
 	}
 
 }
