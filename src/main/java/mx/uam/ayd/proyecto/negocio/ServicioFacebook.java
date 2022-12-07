@@ -27,7 +27,7 @@ public class ServicioFacebook {
 		//Prefijo con parte del url de la API y el identificador del grupo
 		String cadenaComunPrefijo = "https://graph.facebook.com/v15.0/2431150130380813/feed?message=";
 		//Se tiene que renovar el token cada 60 dias si se quiere mantener la funcionalidad
-		String cadenaComunSufijo = "&access_token=EAAHmEZAhe2RQBALmImuqMKPIlUaZBGZAQZAzEcmS2CLMtU9SzQodYJkHegcZCPZB8Cu0h8OZC5LZB1xsB9vXhNrVifrZCO4el2m7jjljUyi4hgN156v76ReioT7XHuGSsrzUZClWDQfJXGZCkg33VcmAe8R7JsGz37PWNgE8lg8Qy6yR8NNZCD5uEyi4o06ihZA1tFJgZD";
+		String cadenaComunSufijo = "&access_token=EAAHmEZAhe2RQBAO9oZBaivjrfJBWDia5PrmGUeka4ru2J0cBtBZCFMR7gZAzM074xjkUl3b7eo3oZB1nC7PdVM9VYSua5wRAZButKVMSZAL0MBVUZAw7wqEi8lsHtTU03PWKe4C9ZBndtNaNprMbvUA7P4IsHLgLvyngFHyZCruZCRJ3cWD66XlNt3wN6GTG8FfJRAZD";
 		try {
 			URL url = new URL(cadenaComunPrefijo+mensajeFormateado+cadenaComunSufijo);
 			System.out.println(url);
