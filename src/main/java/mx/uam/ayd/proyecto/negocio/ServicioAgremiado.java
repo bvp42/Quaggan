@@ -1,4 +1,5 @@
 package mx.uam.ayd.proyecto.negocio;
+import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import mx.uam.ayd.proyecto.datos.RepositoryAgremiado;
@@ -22,9 +23,30 @@ public class ServicioAgremiado {
     public Agremiado obtenerAgremiado(String password,String usuario){
         return repositoryAgremiado.findByPasswordAndNombre(password, usuario);
     }
-
-    public void registrarAgremiado(Agremiado agremiado ){
-        repositoryAgremiado.save(agremiado);
+     
+    /**
+     * Registra a un gremiado verificando que no haya sido registrado y
+     * que no se repitan las contraseñas
+     * 
+     * @param agremiado 
+     * @return true indica que el agremiado fue registrado exitosamente
+     *         false indica que no se pudo registrar el agremiado porque 
+     *         se repite la clave y/o contraseña
+     */
+    public boolean registrarAgremiado(Agremiado agremiado ){
+        if (!repositoryAgremiado.existsByPassword(agremiado.getPassword())){
+            if(!repositoryAgremiado.existsByClave(agremiado.getClave())){
+                repositoryAgremiado.save(agremiado);
+                return true;
+            }else{
+                JOptionPane.showMessageDialog(null,"La clave del agremiado ya fue registrada", "Clave invalida", 0);
+                return false;
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Cambie la contraseña", "Contraseña invalida", 0);
+            return false;
+        }
+        
     }
     
     

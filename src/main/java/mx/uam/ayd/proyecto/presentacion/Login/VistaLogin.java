@@ -33,11 +33,13 @@ public class VistaLogin extends Pantalla {
 	private final JLabel lblUsuario;
 	private final JLabel lblClave;
 	private JButton btnLogin;
+	private JButton btnLogin_1;
 	private JTextField tfUsuario;
 	private JPasswordField pfClave;
 	private JComboBox cbRol;
 	String usuario;
 	String clave;
+	
 
 	public VistaLogin() {
 
@@ -109,6 +111,36 @@ public class VistaLogin extends Pantalla {
 		gbcLogin.gridx = 2;
 		gbcLogin.gridy = 4;
 		add(btnLogin,gbcLogin);
+
+		//tfUsuario.setText("Yanely");
+		//pfClave.setText("123");
+		//cbRol.setSelectedIndex(2);
+		/*******************************************************************************************/
+    		/* Recuperar contraseña */
+		btnLogin_1 = new JButton("Olvide mi Contraseña");
+		GridBagConstraints gbcOlCo = new GridBagConstraints();
+		gbcOlCo.gridwidth = 1;
+		gbcOlCo.insets = new Insets(10, 0, 5, 5);
+		gbcOlCo.gridx = 2;
+		gbcOlCo.gridy = 5;
+		add(btnLogin_1,gbcOlCo);
+
+		btnLogin_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				RecuperarClave clave = new RecuperarClave();
+				//clave.setVisible(true);
+
+				/*VistaLogin ventanaInicio = new VistaLogin();
+				ventanaInicio.setVisible(true);*/
+				
+				
+				
+				
+			}
+		});
+
+		/*******************************************************************************************/
 	
 		btnLogin.addMouseListener(new MouseAdapter() {
 			@Override
@@ -119,17 +151,18 @@ public class VistaLogin extends Pantalla {
 				if(usuario.equals("") || password.equals("") || rol == 0){
 					JOptionPane.showMessageDialog(null, "Llene todos los campos","Campos vacios",
 					JOptionPane.WARNING_MESSAGE);
-					tfUsuario.requestFocus();
+					
 				}else{
 					try {
 						control.validaDatos(controlPrincipal,usuario,password,rol);
+						tfUsuario.setText("");
+						pfClave.setText("");
+						cbRol.setSelectedIndex(0);
 					} catch (NoSuchAlgorithmException e1) {
 						e1.printStackTrace();
 					}
 				}
-				tfUsuario.setText("");
-				pfClave.setText("");
-				cbRol.setSelectedIndex(0);
+				tfUsuario.grabFocus();
 			}
 		});
 		
@@ -139,7 +172,6 @@ public class VistaLogin extends Pantalla {
 	public void muestra(ControlPrincipal controlPrincipal) {
 		this.controlPrincipal = controlPrincipal;
 		setVisible(true);
-	}
-    
-    
+	}	
+
 }

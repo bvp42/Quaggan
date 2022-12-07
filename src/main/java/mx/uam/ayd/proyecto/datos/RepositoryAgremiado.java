@@ -5,6 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface RepositoryAgremiado extends CrudRepository<Agremiado, String> {
 
+    public boolean existsByPassword(String password);
     public boolean existsByPasswordAndNombre(String password,String nombre);
     public Agremiado findByPasswordAndNombre(String password, String nombre);
+    public boolean existsByClave(String clave);
 }
