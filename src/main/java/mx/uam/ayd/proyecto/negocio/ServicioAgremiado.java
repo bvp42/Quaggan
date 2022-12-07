@@ -3,6 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import mx.uam.ayd.proyecto.datos.RepositoryAgremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
+import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 /**
  * Servicio para la entidad Agremiado
  * 
@@ -38,5 +39,9 @@ public class ServicioAgremiado {
      */
     public boolean getAccesoATramites(Agremiado agremiado) {
         return agremiado.isAccesoATramites();
+    }
+
+    public SolicitudTramite getSolicitudActiva(Agremiado agremiado) {
+        return agremiado.getSolicitudActiva();
     }
 }
