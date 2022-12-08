@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.security.NoSuchAlgorithmException;
@@ -16,10 +17,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
 
-import mx.uam.ayd.proyecto.presentacion.agendarCita.VentanaAgendarCita;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 import mx.uam.ayd.proyecto.presentacion.principal.ControlPrincipal;
-import mx.uam.ayd.proyecto.presentacion.principal.VentanaInicio;
 
 @SuppressWarnings("serial")
 @Component
@@ -35,16 +34,14 @@ public class VistaLogin extends Pantalla {
 	private final JLabel lblUsuario;
 	private final JLabel lblClave;
 	private JButton btnLogin;
-	private JButton btnLogin_1;
+	private JButton btnReCo;
 	private JTextField tfUsuario;
 	private JPasswordField pfClave;
 	private JComboBox cbRol;
 	String usuario;
 	String clave;
-	
 
 	public VistaLogin() {
-		VentanaInicio ventanaInicio;
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 71, 156, 0, 0, 0};
@@ -78,7 +75,7 @@ public class VistaLogin extends Pantalla {
 		gbcTfUsuario.gridy = 1;
 		add(tfUsuario,gbcTfUsuario);
 
-		lblClave = new JLabel("Clave");
+		lblClave = new JLabel("Contraseña");
 		GridBagConstraints gbcClave = new GridBagConstraints();
 		gbcClave.gridwidth = 1;
 		gbcClave.insets = new Insets(0, 0, 5, 5);
@@ -117,26 +114,19 @@ public class VistaLogin extends Pantalla {
 
 		/*******************************************************************************************/
     		/* Recuperar contraseña */
-		btnLogin_1 = new JButton("Olvide mi Contraseña");
+		btnReCo = new JButton("Olvide mi Contraseña");
 		GridBagConstraints gbcOlCo = new GridBagConstraints();
 		gbcOlCo.gridwidth = 1;
 		gbcOlCo.insets = new Insets(10, 0, 5, 5);
 		gbcOlCo.gridx = 2;
 		gbcOlCo.gridy = 5;
-		add(btnLogin_1,gbcOlCo);
+		add(btnReCo,gbcOlCo);
 
-		btnLogin_1.addMouseListener(new MouseAdapter() {
+		btnReCo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				RecuperarClave clave = new RecuperarClave();
-				//clave.setVisible(true);
 
-				/*VistaLogin ventanaInicio = new VistaLogin();
-				ventanaInicio.setVisible(true);*/
-				
-				
-				
-				
 			}
 		});
 
@@ -167,9 +157,11 @@ public class VistaLogin extends Pantalla {
 		
 	}
 	
+	
 	public void muestra(ControlPrincipal controlPrincipal) {
 		this.controlPrincipal = controlPrincipal;
 		setVisible(true);
-	}	
-
+	}
+    
+    
 }
