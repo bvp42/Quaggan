@@ -79,6 +79,13 @@
     		<artifactId>telegrambots-spring-boot-starter</artifactId>
     		<version>6.3.0</version>
 		</dependency>
+		
+		<!-- https://javaee.github.io/javamail/-->
+        	<dependency>
+            		<groupId>com.sun.mail</groupId>
+            		<artifactId>javax.mail</artifactId>
+            		<version>1.6.2</version>
+        	</dependency>
 
 	</dependencies>
 
