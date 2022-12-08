@@ -112,6 +112,9 @@ public class VistaLogin extends Pantalla {
 		gbcLogin.gridy = 4;
 		add(btnLogin,gbcLogin);
 
+		//tfUsuario.setText("Yanely");
+		//pfClave.setText("123");
+		//cbRol.setSelectedIndex(2);
 		/*******************************************************************************************/
     		/* Recuperar contraseña */
 		btnReCo = new JButton("Olvide mi Contraseña");
@@ -141,17 +144,18 @@ public class VistaLogin extends Pantalla {
 				if(usuario.equals("") || password.equals("") || rol == 0){
 					JOptionPane.showMessageDialog(null, "Llene todos los campos","Campos vacios",
 					JOptionPane.WARNING_MESSAGE);
-					tfUsuario.requestFocus();
+					
 				}else{
 					try {
 						control.validaDatos(controlPrincipal,usuario,password,rol);
+						tfUsuario.setText("");
+						pfClave.setText("");
+						cbRol.setSelectedIndex(0);
 					} catch (NoSuchAlgorithmException e1) {
 						e1.printStackTrace();
 					}
 				}
-				tfUsuario.setText("");
-				pfClave.setText("");
-				cbRol.setSelectedIndex(0);
+				tfUsuario.grabFocus();
 			}
 		});
 		

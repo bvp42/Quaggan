@@ -29,10 +29,10 @@ public class ServicioAgremiadoTest{
 
     @Test
     void validarAgremiado(){
-        agremiado1.setClave("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
+        agremiado1.setPassword("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
         agremiado1.setNombre("Alan");
 
-        when(repositoryAgremiado.existsByClaveAndNombre(agremiado1.getClave(), agremiado1.getNombre())).thenReturn(true);
+        when(repositoryAgremiado.existsByPasswordAndNombre(agremiado1.getPassword(), agremiado1.getNombre())).thenReturn(true);
         //Prueba 1: Valida datos con clave y nombre correctos
         datosCorrectos = servicioAgremiado.validarAgremiado("Alan", "cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
         assertTrue(datosCorrectos);
@@ -52,15 +52,41 @@ public class ServicioAgremiadoTest{
 
     @Test
     void obtenerAgremiado(){
-        agremiado1.setClave("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
+        agremiado1.setPassword("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
         agremiado1.setNombre("Alan");
 
-        when(repositoryAgremiado.findByClave(agremiado1.getClave())).thenReturn(agremiado1);
+        when(repositoryAgremiado.findByPasswordAndNombre(agremiado1.getPassword(),agremiado1.getNombre())).thenReturn(agremiado1);
         //Prueba 1: Clave correcta
-        agremiado2 = servicioAgremiado.obtenerAgremiado("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
+        agremiado2 = servicioAgremiado.obtenerAgremiado("cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8","Alan");
         assertEquals(agremiado1, agremiado2);
         //Prueba 2: Clave incorrecta
-        agremiado2 = servicioAgremiado.obtenerAgremiado("db4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8");
+        agremiado2 = servicioAgremiado.obtenerAgremiado("db4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8", "Alan");
         assertNull(agremiado2);
+    }
+
+    @Test
+    void registraAgremiado(){
+        agremiado1.setPassword("101ee893b1b15600f268a9259688d9b462db3641880df75863da525eacae8b0f");
+        agremiado1.setClave("2211682860EA00NK017.091041");
+        boolean seRegistroAgremiado;
+        
+        //prueba 1 La contraseña ya existe registrada
+        when(repositoryAgremiado.existsByPassword(agremiado1.getPassword())).thenReturn(true);
+        seRegistroAgremiado = servicioAgremiado.registrarAgremiado(agremiado1);
+        assertFalse(seRegistroAgremiado);
+        
+        
+        //Prueba 2 La clave ya fue registrada
+        when(repositoryAgremiado.existsByPassword(agremiado1.getPassword())).thenReturn(false);
+        when(repositoryAgremiado.existsByClave(agremiado1.getClave())).thenReturn(true);
+        seRegistroAgremiado = servicioAgremiado.registrarAgremiado(agremiado1);
+        assertFalse(seRegistroAgremiado);
+
+        //Prueba 3 La clave y contraseña no existen
+        when(repositoryAgremiado.existsByPassword(agremiado1.getPassword())).thenReturn(false);
+        when(repositoryAgremiado.existsByClave(agremiado1.getClave())).thenReturn(false);
+        seRegistroAgremiado = servicioAgremiado.registrarAgremiado(agremiado1);
+        assertTrue(seRegistroAgremiado);
+
     }
 }

@@ -50,4 +50,12 @@ public class ControlCrearPublicacion {
 	public void difundirTelegram() throws TelegramApiException, IOException {
 		servicioAviso.difundirTelegram();
 	}
+	/*
+	 * Metodo para difundir a Facebook
+	 * @autor Brandon Villada 
+	 */
+	public boolean difundirFacebook()  {
+		return servicioAviso.difundirFacebook();
+	}
+	
 }

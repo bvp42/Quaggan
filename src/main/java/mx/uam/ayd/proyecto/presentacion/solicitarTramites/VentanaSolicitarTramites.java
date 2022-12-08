@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
+import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 
@@ -27,9 +28,10 @@ public class VentanaSolicitarTramites extends Pantalla {
     private GridBagConstraints gbc = new GridBagConstraints();
     private JPanel panelCentral, panelSolicitarTramite, panelTramiteActivo;
     private JLabel lblNorth, lblSeleccionarTramite, lblRequisitos, lblDocumentosSeleccionados,
-            lblDocumentosSeleccionados_;
+            lblDocumentosSeleccionados_, lblNoSolicitud, lblNoSolicitud_, lblFechaSolicitud, lblFechaSolicitud_,
+            lblTramiteSolicitado, lblTramiteSolicitado_, lblEstado, lblEstado_;
     private JButton btnSiguienteSolicitarTramite, btnAdjuntarDocumentos, btnCancelarAdjuntarDocumetos,
-            btnEnviarSolicitud;
+            btnEnviarSolicitud, btnDescargarDocumentoTramite, btnAceptarTramite, btnSolicitarCorreccion;
     private JComboBox<String> comboBoxTramitesDisponibles;
     private List<TipoTramite> listaTramites;
     private JList<String> jListRequerimientos;
@@ -148,12 +150,99 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelSolicitarTramite.add(btnEnviarSolicitud, gbc);
 
         /* -----PANEL TRAMITE ACTIVO */
-
         panelTramiteActivo = new JPanel();
-        JLabel lblTAtemp = new JLabel("VENTANA DE TRÁMITE ACTIVO POR IMPLEMENTAR");
-        panelTramiteActivo.setBorder(new LineBorder(new Color(255, 0, 0), 3, true));
-        panelTramiteActivo.add(lblTAtemp);
+        panelTramiteActivo.setLayout(new GridBagLayout());
         panelCentral.add(panelTramiteActivo);
+
+        /* ---------ELEMENTOS TRAMITE ACTIVO */
+        lblNoSolicitud = new JLabel("No. de solicitud:");
+        lblNoSolicitud.setFont(new Font("Arial", Font.PLAIN, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(lblNoSolicitud, gbc);
+
+        lblNoSolicitud_ = new JLabel("-");
+        lblNoSolicitud_.setFont(new Font("Arial", Font.ITALIC, 15));
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(lblNoSolicitud_, gbc);
+
+        lblFechaSolicitud = new JLabel("Fecha de registro:");
+        lblFechaSolicitud.setFont(new Font("Arial", Font.PLAIN, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(lblFechaSolicitud, gbc);
+
+        lblFechaSolicitud_ = new JLabel("-");
+        lblFechaSolicitud_.setFont(new Font("Arial", Font.ITALIC, 15));
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(lblFechaSolicitud_, gbc);
+
+        lblTramiteSolicitado = new JLabel("Tramite solicitado:");
+        lblTramiteSolicitado.setFont(new Font("Arial", Font.PLAIN, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(lblTramiteSolicitado, gbc);
+
+        lblTramiteSolicitado_ = new JLabel("-");
+        lblTramiteSolicitado_.setFont(new Font("Arial", Font.ITALIC, 15));
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(lblTramiteSolicitado_, gbc);
+
+        lblEstado = new JLabel("Estado:");
+        lblEstado.setFont(new Font("Arial", Font.PLAIN, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(lblEstado, gbc);
+
+        lblEstado_ = new JLabel("-");
+        lblEstado_.setFont(new Font("Arial", Font.ITALIC, 15));
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(lblEstado_, gbc);
+
+        btnDescargarDocumentoTramite = new JButton("Descargar documento de trámite");
+        btnDescargarDocumentoTramite.setFont(new Font("Arial", Font.ITALIC, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
+        panelTramiteActivo.add(btnDescargarDocumentoTramite, gbc);
+
+        btnAceptarTramite = new JButton("Aceptar trámite");
+        btnAceptarTramite.setFont(new Font("Arial", Font.ITALIC, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(btnAceptarTramite, gbc);
+
+        btnSolicitarCorreccion = new JButton("Solicitar corrección");
+        btnSolicitarCorreccion.setFont(new Font("Arial", Font.ITALIC, 15));
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(btnSolicitarCorreccion, gbc);
+
 
         /* ACTION LISTENERS */
         comboBoxTramitesDisponibles.addActionListener(e -> actualizarListaRequerimientos());
@@ -207,12 +296,39 @@ public class VentanaSolicitarTramites extends Pantalla {
 
     }
 
-    void ventanaTramiteActivo(Agremiado agremiado, ControlSolicitarTramites control) {
+    /**
+     * Método que muestra la interfaz con los datos de un trámite activo
+     * 
+     * @param agremiado       Agremiado con sesión iniciada
+     * @param solicitudActiva solicitud activa
+     * @param control         apuntador a ControlSolicitarTramites
+     */
+    void ventanaTramiteActivo(Agremiado agremiado, SolicitudTramite solicitudActiva, ControlSolicitarTramites control) {
 
         this.agremiado = agremiado;
         this.control = control;
         panelSolicitarTramite.setVisible(false);
         panelTramiteActivo.setVisible(true);
+
+        lblNoSolicitud_.setText(String.valueOf(solicitudActiva.getIdSolicitud()));
+        lblFechaSolicitud_.setText(String.valueOf(solicitudActiva.getFechaSolicitud()).substring(0,19));
+        lblTramiteSolicitado_.setText(solicitudActiva.getTipoTramite().getNombreTramite());
+        lblEstado_.setText(solicitudActiva.getEstado());
+
+        switch (solicitudActiva.getEstado()) {
+            case "Finalizado":
+                btnDescargarDocumentoTramite.setVisible(true);
+                btnAceptarTramite.setVisible(true);
+                btnSolicitarCorreccion.setVisible(true);
+                break;
+        
+            default:
+                btnDescargarDocumentoTramite.setVisible(false);
+                btnAceptarTramite.setVisible(false);
+                btnSolicitarCorreccion.setVisible(false);
+                break;
+        }
+
         setVisible(true);
 
     }
@@ -249,7 +365,6 @@ public class VentanaSolicitarTramites extends Pantalla {
         btnEnviarSolicitud.setVisible(true);
         btnEnviarSolicitud.setEnabled(false);
 
-        log.info("SIGUIENTE");
         JOptionPane.showMessageDialog(this, "Por favor, adjunte los documentos en el orden listado.");
 
         panelTramiteActivo.setVisible(false);
@@ -337,8 +452,6 @@ public class VentanaSolicitarTramites extends Pantalla {
                     JOptionPane.showMessageDialog(this, "Ha ocurrido un error, seleccione nuevamente el documento",
                             "Error al adjuntar el documento", JOptionPane.ERROR_MESSAGE);
                 }
-
-                e.printStackTrace();
 
             }
 

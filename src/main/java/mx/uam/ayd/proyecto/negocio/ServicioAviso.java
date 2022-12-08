@@ -15,6 +15,9 @@ public class ServicioAviso {
 	@Autowired
 	AvisoRepository avisoRepository;
 	Aviso aviso_publicado;
+	
+	@Autowired
+	private ServicioFacebook servicioFacebook;
 
 	private Calendar obtenerFecha() {
 		Calendar fecha = Calendar.getInstance();
@@ -85,6 +88,33 @@ public class ServicioAviso {
 
 	public List<Aviso> recuperaTodos() {
 		return avisoRepository.findAll();
+	}
+
+	/*
+	 * Metodo que permite difundir un aviso a un grupo de Facebook
+	 * 
+	 * @autor Brandon Villada
+	 * 
+	 */
+	public boolean difundirFacebook() {
+		/*
+		 * Si entramos al condicional y es verdadero necesariamente algo paso mal al
+		 * almacenar nuestra publicacion por lo que no deberiamos poder segir con la
+		 * difusion Por lo que se lanzara una excepcion.
+		 *
+		 */
+		if (aviso_publicado.getIdAviso() <= -1) {
+			throw new NullPointerException("No se almaceno la publicacion anterior intentar de nuevo");
+		}
+		/*
+		 * Almacenamos los datos de la publicacion para la difusion
+		 */
+		
+		String textoMensaje = aviso_publicado.getContenido();
+				
+		//Regresa verdadero si la peticion fue correcta o falso de lo contrario
+		return servicioFacebook.post(textoMensaje);
+		
 	}
 
 }
