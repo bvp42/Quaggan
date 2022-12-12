@@ -34,44 +34,8 @@ public class ControlProcesarTramites {
 
     }
 
-    /**
-     * Despliega la vista para un tramite pendiete
-     * 
-     * @param solicitudSeleccionada la solicitud seleccionada de la lista por el
-     *                              usuario
-     */
-    void tramitePendiente(SolicitudTramite solicitudSeleccionada) {
-        ventana.ventanaTramitePendiente(solicitudSeleccionada);
-    }
-
-    /**
-     * Despliega la vista para un tramite en progreso
-     * 
-     * @param solicitudSeleccionada la solicitud seleccionada de la lista por el
-     *                              usuario
-     */
-    void tramiteEnProgreso(SolicitudTramite solicitudSeleccionada) {
-        ventana.ventanaTramiteEnProgreso(solicitudSeleccionada);
-    }
-
-    /**
-     * Despliega la vista para un tramite rechazado
-     * 
-     * @param solicitudSeleccionada la solicitud seleccionada de la lista por el
-     *                              usuario
-     */
-    void tramiteRechazado(SolicitudTramite solicitudSeleccionada) {
-        ventana.ventanaTramiteRechazado(solicitudSeleccionada);
-    }
-
-    /**
-     * Despliega la vista para un tramite finalizado
-     * 
-     * @param solicitudSeleccionada la solicitud seleccionada de la lista por el
-     *                              usuario
-     */
-    void tramiteFinalizado(SolicitudTramite solicitudSeleccionada) {
-        ventana.ventanaTramiteFinalizado(solicitudSeleccionada);
+    void actualizarVista(SolicitudTramite solicitudSeleccionada) {
+        ventana.actualizarVista(solicitudSeleccionada);
     }
 
     /**

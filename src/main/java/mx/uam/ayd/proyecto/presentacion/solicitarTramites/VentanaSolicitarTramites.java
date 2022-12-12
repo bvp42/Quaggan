@@ -11,14 +11,12 @@ import java.nio.file.Path;
 
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 
 @Component
-@Slf4j
 public class VentanaSolicitarTramites extends Pantalla {
 
     private ControlSolicitarTramites control;
@@ -62,6 +60,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         /* ---------ELEMENTOS SELECCIONAR TRAMITE */
 
         gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         lblSeleccionarTramite = new JLabel("Seleccionar trámite:");
         lblSeleccionarTramite.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -95,7 +94,6 @@ public class VentanaSolicitarTramites extends Pantalla {
         gbc.gridy = 1;
         gbc.gridheight = 1;
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
         panelSolicitarTramite.add(jListRequerimientos, gbc);
 
         btnSiguienteSolicitarTramite = new JButton("Siguiente");
@@ -387,8 +385,6 @@ public class VentanaSolicitarTramites extends Pantalla {
         lblDocumentosSeleccionados_.setVisible(false);
         lblDocumentosSeleccionados_.setText("Ningún documento seleccionado.");
         btnEnviarSolicitud.setVisible(false);
-
-        log.info("CANCELAR");
 
         panelTramiteActivo.setVisible(false);
     }
