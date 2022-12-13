@@ -3,8 +3,11 @@ package mx.uam.ayd.proyecto.presentacion.solicitarTramites;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import java.nio.file.Path;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
+import mx.uam.ayd.proyecto.negocio.modelo.Documento;
 import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
@@ -24,6 +28,7 @@ public class VentanaSolicitarTramites extends Pantalla {
     private ControlSolicitarTramites control;
     private Agremiado agremiado;
     private TipoTramite tipoTramiteSeleccionado;
+    private SolicitudTramite solicitudActiva;
 
     private GridBagConstraints gbc = new GridBagConstraints();
     private JPanel panelCentral, panelSolicitarTramite, panelTramiteActivo;
@@ -220,7 +225,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(lblEstado_, gbc);
 
         btnDescargarDocumentoTramite = new JButton("Descargar documento de trámite");
-        btnDescargarDocumentoTramite.setFont(new Font("Arial", Font.ITALIC, 15));
+        btnDescargarDocumentoTramite.setFont(new Font("Arial", Font.PLAIN, 15));
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridheight = 1;
@@ -228,7 +233,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(btnDescargarDocumentoTramite, gbc);
 
         btnAceptarTramite = new JButton("Aceptar trámite");
-        btnAceptarTramite.setFont(new Font("Arial", Font.ITALIC, 15));
+        btnAceptarTramite.setFont(new Font("Arial", Font.PLAIN, 15));
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridheight = 1;
@@ -236,13 +241,12 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(btnAceptarTramite, gbc);
 
         btnSolicitarCorreccion = new JButton("Solicitar corrección");
-        btnSolicitarCorreccion.setFont(new Font("Arial", Font.ITALIC, 15));
+        btnSolicitarCorreccion.setFont(new Font("Arial", Font.PLAIN, 15));
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         panelTramiteActivo.add(btnSolicitarCorreccion, gbc);
-
 
         /* ACTION LISTENERS */
         comboBoxTramitesDisponibles.addActionListener(e -> actualizarListaRequerimientos());
@@ -255,6 +259,8 @@ public class VentanaSolicitarTramites extends Pantalla {
         btnAdjuntarDocumentos.addActionListener(e -> adjuntarDocumentos());
 
         btnEnviarSolicitud.addActionListener(e -> enviarSolicitud());
+
+        btnDescargarDocumentoTramite.addActionListener(e -> descargarDocumentoTramite());
 
     }
 
@@ -307,11 +313,12 @@ public class VentanaSolicitarTramites extends Pantalla {
 
         this.agremiado = agremiado;
         this.control = control;
+        this.solicitudActiva = solicitudActiva;
         panelSolicitarTramite.setVisible(false);
         panelTramiteActivo.setVisible(true);
 
         lblNoSolicitud_.setText(String.valueOf(solicitudActiva.getIdSolicitud()));
-        lblFechaSolicitud_.setText(String.valueOf(solicitudActiva.getFechaSolicitud()).substring(0,19));
+        lblFechaSolicitud_.setText(String.valueOf(solicitudActiva.getFechaSolicitud()).substring(0, 19));
         lblTramiteSolicitado_.setText(solicitudActiva.getTipoTramite().getNombreTramite());
         lblEstado_.setText(solicitudActiva.getEstado());
 
@@ -321,7 +328,7 @@ public class VentanaSolicitarTramites extends Pantalla {
                 btnAceptarTramite.setVisible(true);
                 btnSolicitarCorreccion.setVisible(true);
                 break;
-        
+
             default:
                 btnDescargarDocumentoTramite.setVisible(false);
                 btnAceptarTramite.setVisible(false);
@@ -388,8 +395,6 @@ public class VentanaSolicitarTramites extends Pantalla {
         lblDocumentosSeleccionados_.setText("Ningún documento seleccionado.");
         btnEnviarSolicitud.setVisible(false);
 
-        log.info("CANCELAR");
-
         panelTramiteActivo.setVisible(false);
     }
 
@@ -453,6 +458,35 @@ public class VentanaSolicitarTramites extends Pantalla {
                             "Error al adjuntar el documento", JOptionPane.ERROR_MESSAGE);
                 }
 
+            }
+
+        }
+
+    }
+
+    /**
+     * Método que invoca una ventana para elegir la ruta donde el agremiado desea
+     * guardar el documento de trámite finalizado
+     */
+    void descargarDocumentoTramite() {
+        chooser = new JFileChooser();
+        chooser.setCurrentDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
+        chooser.setDialogTitle("Seleccione una ruta");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File path = new File(
+                    chooser.getSelectedFile() + "/Solicitud" + String.valueOf(solicitudActiva.getIdSolicitud())
+                            + solicitudActiva.getTipoTramite().getNombreTramite() + ".pdf");
+
+            try (FileOutputStream out = new FileOutputStream(path)) {
+                out.write(solicitudActiva.getDocumentoTramite().getArchivo());
+                out.close();
+
+            } catch (Exception e_) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido un error, selecciona una nueva ruta",
+                        "Ha ocurrido un error", JOptionPane.ERROR_MESSAGE);
             }
 
         }
