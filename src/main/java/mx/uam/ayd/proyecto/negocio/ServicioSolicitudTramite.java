@@ -229,4 +229,25 @@ public class ServicioSolicitudTramite {
 
     }
 
+    public List<SolicitudTramite> findBySolicitante(Agremiado agremiado) {
+        return solicitudTramiteRepository.findBySolicitanteAndEstado(agremiado, "Aceptado");
+    }
+
+    public Agremiado correccionSolicitada(Agremiado agremiado, String motivoCorrecion) {
+        
+        SolicitudTramite solicitudActiva = agremiado.getSolicitudActiva();
+
+        solicitudActiva.setMotivoCorrecion(motivoCorrecion);
+        solicitudActiva.setEstado("Erronea");
+        solicitudActiva.setFechaCorrecion(new Date(System.currentTimeMillis()));
+
+        solicitudTramiteRepository.save(solicitudActiva);
+
+        agremiado.setSolicitudActiva(solicitudActiva);
+        repositoryAgremiado.save(agremiado);
+        
+        return agremiado;
+        
+    }
+
 }

@@ -44,12 +44,15 @@ public class ControlSolicitarTramites {
      * @param agremiado agremiado con sesión iniciada
      */
     public void inicia(Agremiado agremiado) {
+        
+        ventana.inicia(agremiado, this);
+
         if (servicioAgremiado.getAccesoATramites(agremiado)) {
             List<TipoTramite> tramites = servicioTipoTramite.findAll();
-            ventana.ventanaSolicitarTramite(agremiado, tramites, this);
+            ventana.ventanaSolicitarTramite(tramites);
         } else {
             SolicitudTramite solicitudTramite = servicioAgremiado.getSolicitudActiva(agremiado);
-            ventana.ventanaTramiteActivo(agremiado, solicitudTramite, this);
+            ventana.ventanaTramiteActivo(solicitudTramite);
         }
 
     }
@@ -81,7 +84,9 @@ public class ControlSolicitarTramites {
                     listaPaths, agremiado);
             SolicitudTramite solicitudActiva = servicioAgremiado.getSolicitudActiva(agremiadoActualizado);
 
-            ventana.ventanaTramiteActivo(agremiadoActualizado, solicitudActiva, this);
+            ventana.actualizarAgremiado(agremiadoActualizado);
+
+            ventana.ventanaTramiteActivo(solicitudActiva);
 
         } catch (IOException e) {
             throw e;
@@ -91,6 +96,24 @@ public class ControlSolicitarTramites {
             throw e;
         }
 
+    }
+
+    void documentoAceptado(Agremiado agremiado) {
+        Agremiado agremiadoActualizado = servicioAgremiado.documentoAceptado(agremiado);
+        List<TipoTramite> tramites = servicioTipoTramite.findAll();
+        ventana.actualizarAgremiado(agremiadoActualizado);
+        ventana.ventanaSolicitarTramite(tramites);
+    }
+
+    public String getTramitesCompletados(Agremiado agremiado) {
+        List<SolicitudTramite> tramitesCompletados = servicioSolicitudTramite.findBySolicitante(agremiado);
+        return String.valueOf(tramitesCompletados.size());
+    }
+
+    public void correccionSolicitada(Agremiado agremiado, String motivoCorrecion) {
+        Agremiado agremiadoActualizado = servicioSolicitudTramite.correccionSolicitada(agremiado, motivoCorrecion);
+        ventana.actualizarAgremiado(agremiadoActualizado);
+        ventana.ventanaTramiteActivo(agremiadoActualizado.getSolicitudActiva());
     }
 
 }

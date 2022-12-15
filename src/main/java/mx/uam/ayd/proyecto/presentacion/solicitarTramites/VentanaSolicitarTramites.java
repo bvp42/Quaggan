@@ -14,15 +14,12 @@ import java.nio.file.Path;
 
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
-import mx.uam.ayd.proyecto.negocio.modelo.Documento;
 import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 
 @Component
-@Slf4j
 public class VentanaSolicitarTramites extends Pantalla {
 
     private ControlSolicitarTramites control;
@@ -30,14 +27,18 @@ public class VentanaSolicitarTramites extends Pantalla {
     private TipoTramite tipoTramiteSeleccionado;
     private SolicitudTramite solicitudActiva;
 
-    private GridBagConstraints gbc = new GridBagConstraints();
-    private JPanel panelCentral, panelSolicitarTramite, panelTramiteActivo;
+    private GridBagConstraints gbc = new GridBagConstraints(), gbcPanel = new GridBagConstraints();
+    private JPanel panelCentral, panelSolicitarTramite, panelHistorialTramites, panelTramiteActivo, panelCorreciones;
     private JLabel lblNorth, lblSeleccionarTramite, lblRequisitos, lblDocumentosSeleccionados,
             lblDocumentosSeleccionados_, lblNoSolicitud, lblNoSolicitud_, lblFechaSolicitud, lblFechaSolicitud_,
-            lblTramiteSolicitado, lblTramiteSolicitado_, lblEstado, lblEstado_;
-    private JButton btnSiguienteSolicitarTramite, btnAdjuntarDocumentos, btnCancelarAdjuntarDocumetos,
-            btnEnviarSolicitud, btnDescargarDocumentoTramite, btnAceptarTramite, btnSolicitarCorreccion;
-    private JComboBox<String> comboBoxTramitesDisponibles;
+            lblTramiteSolicitado, lblTramiteSolicitado_, lblEstado, lblEstado_, lblTramitesCompletados,
+            lblMotivoCorrecion, lblDetallesAdicionales;
+    private JButton btnHistorialTramites, btnSiguienteSolicitarTramite, btnAdjuntarDocumentos,
+            btnCancelarAdjuntarDocumetos, btnEnviarSolicitud, btnDescargarDocumentoTramite, btnAceptarTramite,
+            btnSolicitarCorreccion, btnEnviarCorrecion, btnCancelarCorrecion;
+    private JComboBox<String> comboBoxTramitesDisponibles, comboBoxMotivoCorrecion;
+    private JTextField txtFieldDetallesAdicionales, txtFieldMotivoCorreccion;
+    private JScrollPane scrollPaneMotivoCorrecion;
     private List<TipoTramite> listaTramites;
     private JList<String> jListRequerimientos;
     private JFileChooser chooser;
@@ -55,18 +56,30 @@ public class VentanaSolicitarTramites extends Pantalla {
         lblNorth.setHorizontalAlignment(SwingConstants.CENTER);
         add(lblNorth, BorderLayout.NORTH);
 
+        /* BTN SOUTH */
+        btnHistorialTramites = new JButton("Historial de trámites finalizados");
+        btnHistorialTramites.setFont(new Font("Arial", Font.BOLD, 15));
+        btnHistorialTramites.setHorizontalAlignment(SwingConstants.CENTER);
+        add(btnHistorialTramites, BorderLayout.SOUTH);
+
         /* PANEL CENTRAL */
         panelCentral = new JPanel();
+        panelCentral.setLayout(new GridBagLayout());
         add(panelCentral, BorderLayout.CENTER);
+
+        gbcPanel.insets = new Insets(10, 10, 10, 10);
 
         /* -----PANEL SOLICITAR TRAMITE */
         panelSolicitarTramite = new JPanel();
         panelSolicitarTramite.setLayout(new GridBagLayout());
-        panelCentral.add(panelSolicitarTramite);
+        gbcPanel.gridx = 0;
+        gbcPanel.gridy = 0;
+        panelCentral.add(panelSolicitarTramite, gbcPanel);
 
         /* ---------ELEMENTOS SELECCIONAR TRAMITE */
 
         gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         lblSeleccionarTramite = new JLabel("Seleccionar trámite:");
         lblSeleccionarTramite.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -82,7 +95,6 @@ public class VentanaSolicitarTramites extends Pantalla {
         gbc.gridy = 0;
         gbc.gridheight = 1;
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
         panelSolicitarTramite.add(comboBoxTramitesDisponibles, gbc);
 
         lblRequisitos = new JLabel("Documentos necesarios:");
@@ -157,7 +169,9 @@ public class VentanaSolicitarTramites extends Pantalla {
         /* -----PANEL TRAMITE ACTIVO */
         panelTramiteActivo = new JPanel();
         panelTramiteActivo.setLayout(new GridBagLayout());
-        panelCentral.add(panelTramiteActivo);
+        gbcPanel.gridx = 0;
+        gbcPanel.gridy = 1;
+        panelCentral.add(panelTramiteActivo, gbcPanel);
 
         /* ---------ELEMENTOS TRAMITE ACTIVO */
         lblNoSolicitud = new JLabel("No. de solicitud:");
@@ -248,11 +262,106 @@ public class VentanaSolicitarTramites extends Pantalla {
         gbc.gridwidth = 1;
         panelTramiteActivo.add(btnSolicitarCorreccion, gbc);
 
+        /* -----PANEL CORRECIONES */
+        panelCorreciones = new JPanel();
+        panelCorreciones.setLayout(new GridBagLayout());
+        gbcPanel.gridx = 0;
+        gbcPanel.gridy = 2;
+        panelCentral.add(panelCorreciones, gbcPanel);
+        panelCorreciones.setVisible(false);
+
+        /* ---------ELEMENTOS PANEL CORRECIONES */
+        lblMotivoCorrecion = new JLabel("Motivo de la correción:");
+        lblMotivoCorrecion.setFont(new Font("Arial", Font.PLAIN, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelCorreciones.add(lblMotivoCorrecion, gbc);
+        lblMotivoCorrecion.setVisible(false);
+
+        comboBoxMotivoCorrecion = new JComboBox<>();
+        comboBoxMotivoCorrecion.addItem("El documento adjunto corresponde a otra persona");
+        comboBoxMotivoCorrecion.addItem("Los datos en el documento son erróneos");
+        comboBoxMotivoCorrecion.addItem("No puedo abrir/visualizar el archivo");
+        comboBoxMotivoCorrecion.addItem("Otro");
+        comboBoxMotivoCorrecion.setFont(new Font("Arial", Font.PLAIN, 15));
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
+        panelCorreciones.add(comboBoxMotivoCorrecion, gbc);
+        comboBoxMotivoCorrecion.setVisible(false);
+
+        lblDetallesAdicionales = new JLabel("Detalles adicionales (opcional):");
+        lblDetallesAdicionales.setFont(new Font("Arial", Font.PLAIN, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelCorreciones.add(lblDetallesAdicionales, gbc);
+        lblDetallesAdicionales.setVisible(false);
+
+        txtFieldDetallesAdicionales = new JTextField();
+        txtFieldDetallesAdicionales.setFont(new Font("Arial", Font.PLAIN, 15));
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
+        panelCorreciones.add(txtFieldDetallesAdicionales, gbc);
+        txtFieldDetallesAdicionales.setVisible(false);
+
+        btnCancelarCorrecion = new JButton("Cancelar");
+        btnCancelarCorrecion.setFont(new Font("Arial", Font.PLAIN, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelCorreciones.add(btnCancelarCorrecion, gbc);
+        btnCancelarCorrecion.setVisible(false);
+
+        btnEnviarCorrecion = new JButton("Enviar solicitud de correcion");
+        btnEnviarCorrecion.setFont(new Font("Arial", Font.PLAIN, 15));
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
+        panelCorreciones.add(btnEnviarCorrecion, gbc);
+        btnEnviarCorrecion.setVisible(false);
+
+        txtFieldMotivoCorreccion = new JTextField();
+        txtFieldMotivoCorreccion.setFont(new Font("Arial", Font.PLAIN, 15));
+        txtFieldMotivoCorreccion.setEnabled(false);
+        
+        scrollPaneMotivoCorrecion = new JScrollPane(txtFieldMotivoCorreccion);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
+        panelCorreciones.add(scrollPaneMotivoCorrecion, gbc);
+        scrollPaneMotivoCorrecion.setPreferredSize(new Dimension(400, 50));
+
+        /* -----PANEL HISTORIAL TRAMITES */
+        panelHistorialTramites = new JPanel();
+        panelHistorialTramites.setLayout(new GridBagLayout());
+        gbcPanel.gridx = 0;
+        gbcPanel.gridy = 3;
+        panelCentral.add(panelHistorialTramites, gbcPanel);
+        panelHistorialTramites.setVisible(false);
+
+        /* ---------ELEMENTOS PANEL HISTORIAL TRAMITES */
+        lblTramitesCompletados = new JLabel();
+        lblTramitesCompletados.setFont(new Font("Arial", Font.PLAIN, 15));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelHistorialTramites.add(lblTramitesCompletados, gbc);
+
         /* ACTION LISTENERS */
         comboBoxTramitesDisponibles.addActionListener(e -> actualizarListaRequerimientos());
 
-        btnSiguienteSolicitarTramite.addActionListener(
-                e -> control.adjuntarDocumentos(listaTramites.get(comboBoxTramitesDisponibles.getSelectedIndex())));
+        btnSiguienteSolicitarTramite.addActionListener(e -> btnSiguienteSolicitarTramite());
 
         btnCancelarAdjuntarDocumetos.addActionListener(e -> btnCancelarAdjuntarDocumetos());
 
@@ -262,21 +371,46 @@ public class VentanaSolicitarTramites extends Pantalla {
 
         btnDescargarDocumentoTramite.addActionListener(e -> descargarDocumentoTramite());
 
+        btnAceptarTramite.addActionListener(e -> aceptarTramite());
+
+        btnSolicitarCorreccion.addActionListener(e -> elegirMotivoCorrecion());
+
+        btnCancelarCorrecion.addActionListener(e -> cancelarMotivoCorreccion());
+
+        btnEnviarCorrecion.addActionListener(e -> enviarCorrecion());
+
+        btnHistorialTramites.addActionListener(e -> historialTramites());
+
+    }
+
+    /**
+     * Método que inicializa comunica a la ventana el agremiado que ha iniciado
+     * sesión y el apuntador al control
+     * 
+     * @param agremiado Agremiado con sesión iniciada
+     * @param control apuntador a ControlSolicitarTramites
+     */
+    void inicia(Agremiado agremiado, ControlSolicitarTramites control) {
+        this.agremiado = agremiado;
+        this.control = control;
+    }
+
+    /**
+     * Actualiza el apuntador de agremiado luego de una actualiación
+     * @param agremiado
+     */
+    void actualizarAgremiado (Agremiado agremiado) {
+        this.agremiado = agremiado;
     }
 
     /**
      * Método que muestra la interfaz que permite solicitar un trámite
      * 
-     * @param agremiado Agremiado con sesión iniciada
      * @param tramites  Lista que contiene los tipos de tramites que pueden
      *                  solicitarse
-     * @param control   apuntardor a ControlSolicitarTramites
      */
-    void ventanaSolicitarTramite(Agremiado agremiado, List<TipoTramite> tramites,
-            ControlSolicitarTramites control) {
+    void ventanaSolicitarTramite(List<TipoTramite> tramites) {
 
-        this.agremiado = agremiado;
-        this.control = control;
         this.listaTramites = tramites;
 
         try {
@@ -296,6 +430,9 @@ public class VentanaSolicitarTramites extends Pantalla {
         btnAdjuntarDocumentos.setVisible(false);
         btnEnviarSolicitud.setVisible(false);
 
+        comboBoxTramitesDisponibles.setEnabled(true);
+        btnSiguienteSolicitarTramite.setVisible(true);
+
         panelTramiteActivo.setVisible(false);
 
         setVisible(true);
@@ -305,14 +442,10 @@ public class VentanaSolicitarTramites extends Pantalla {
     /**
      * Método que muestra la interfaz con los datos de un trámite activo
      * 
-     * @param agremiado       Agremiado con sesión iniciada
      * @param solicitudActiva solicitud activa
-     * @param control         apuntador a ControlSolicitarTramites
      */
-    void ventanaTramiteActivo(Agremiado agremiado, SolicitudTramite solicitudActiva, ControlSolicitarTramites control) {
+    void ventanaTramiteActivo(SolicitudTramite solicitudActiva) {
 
-        this.agremiado = agremiado;
-        this.control = control;
         this.solicitudActiva = solicitudActiva;
         panelSolicitarTramite.setVisible(false);
         panelTramiteActivo.setVisible(true);
@@ -327,12 +460,47 @@ public class VentanaSolicitarTramites extends Pantalla {
                 btnDescargarDocumentoTramite.setVisible(true);
                 btnAceptarTramite.setVisible(true);
                 btnSolicitarCorreccion.setVisible(true);
+                lblMotivoCorrecion.setVisible(false);
+                comboBoxMotivoCorrecion.setVisible(false);
+                comboBoxMotivoCorrecion.setEnabled(true);
+                btnEnviarCorrecion.setVisible(false);
+                btnCancelarCorrecion.setVisible(false);
+                lblDetallesAdicionales.setVisible(false);
+                txtFieldDetallesAdicionales.setVisible(false);
+                txtFieldDetallesAdicionales.setText("");
+                txtFieldDetallesAdicionales.setEnabled(true);
+                scrollPaneMotivoCorrecion.setVisible(false);
+                break;
+            
+            case "Erronea":
+                btnDescargarDocumentoTramite.setVisible(false);
+                btnAceptarTramite.setVisible(false);
+                btnSolicitarCorreccion.setVisible(false);
+                btnEnviarCorrecion.setVisible(false);
+                btnCancelarCorrecion.setVisible(false);
+                lblMotivoCorrecion.setVisible(true);
+                lblDetallesAdicionales.setVisible(false);
+                comboBoxMotivoCorrecion.setVisible(false);
+                comboBoxMotivoCorrecion.setEnabled(false);
+                txtFieldDetallesAdicionales.setVisible(false);
+                txtFieldDetallesAdicionales.setText("");
+                txtFieldDetallesAdicionales.setEnabled(false);
+                scrollPaneMotivoCorrecion.setVisible(true);
+                txtFieldMotivoCorreccion.setText(solicitudActiva.getMotivoCorrecion());
                 break;
 
             default:
                 btnDescargarDocumentoTramite.setVisible(false);
                 btnAceptarTramite.setVisible(false);
                 btnSolicitarCorreccion.setVisible(false);
+                lblMotivoCorrecion.setVisible(false);
+                comboBoxMotivoCorrecion.setVisible(false);
+                btnEnviarCorrecion.setVisible(false);
+                btnCancelarCorrecion.setVisible(false);
+                lblDetallesAdicionales.setVisible(false);
+                txtFieldDetallesAdicionales.setVisible(false);
+                txtFieldDetallesAdicionales.setText("");
+                scrollPaneMotivoCorrecion.setVisible(false);
                 break;
         }
 
@@ -376,6 +544,11 @@ public class VentanaSolicitarTramites extends Pantalla {
 
         panelTramiteActivo.setVisible(false);
 
+    }
+
+    void btnSiguienteSolicitarTramite() {
+        lblDocumentosSeleccionados_.setText("Ningún documento seleccionado.");
+        control.adjuntarDocumentos(listaTramites.get(comboBoxTramitesDisponibles.getSelectedIndex()));
     }
 
     /**
@@ -491,6 +664,73 @@ public class VentanaSolicitarTramites extends Pantalla {
 
         }
 
+    }
+
+    void aceptarTramite() {
+        int opcionSeleccionada = JOptionPane.showConfirmDialog(this,
+                "¿Esta seguro de dar por finalizado este trámite? \n Una vez acepte su documento, no podrá solicitar correción alguna",
+                "Confirmar selección", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (opcionSeleccionada == 0) {
+
+            control.documentoAceptado(agremiado);
+
+        }
+
+    }
+
+    void elegirMotivoCorrecion() {
+        panelCorreciones.setVisible(true);
+        btnAceptarTramite.setVisible(false);
+        btnSolicitarCorreccion.setVisible(false);
+        lblMotivoCorrecion.setVisible(true);
+        comboBoxMotivoCorrecion.setVisible(true);
+        comboBoxMotivoCorrecion.setEnabled(true);
+        lblDetallesAdicionales.setVisible(true);
+        txtFieldDetallesAdicionales.setVisible(true);
+        txtFieldDetallesAdicionales.setEnabled(true);
+        btnEnviarCorrecion.setVisible(true);
+        btnCancelarCorrecion.setVisible(true);
+        txtFieldDetallesAdicionales.setText("");
+    }
+
+    void cancelarMotivoCorreccion() {
+        panelCorreciones.setVisible(false);
+        btnAceptarTramite.setVisible(true);
+        btnSolicitarCorreccion.setVisible(true);
+        lblMotivoCorrecion.setVisible(false);
+        comboBoxMotivoCorrecion.setVisible(false);
+        lblDetallesAdicionales.setVisible(false);
+        txtFieldDetallesAdicionales.setVisible(false);
+        btnEnviarCorrecion.setVisible(false);
+        btnCancelarCorrecion.setVisible(false);
+        txtFieldDetallesAdicionales.setText("");
+    }
+
+    void enviarCorrecion() {
+        int opcionSeleccionada = JOptionPane.showConfirmDialog(this,
+                "¿Esta seguro de la información seleccionada para realizar la corrección de su trámite?",
+                "Confirmar selección", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (opcionSeleccionada == 0) {
+
+            if (txtFieldDetallesAdicionales.getText().length() > 200) {
+                JOptionPane.showMessageDialog(this, "Los detalles adicionales no pueden exceder los 200 caracteres",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            String motivoCorrecion = comboBoxMotivoCorrecion.getSelectedItem() + ". "
+                    + txtFieldDetallesAdicionales.getText();
+            control.correccionSolicitada(this.agremiado, motivoCorrecion);
+
+        }
+    }
+
+    void historialTramites() {
+
+        panelHistorialTramites.setVisible(!panelHistorialTramites.isVisible());
+        lblTramitesCompletados
+                .setText("USTED TIENE " + control.getTramitesCompletados(this.agremiado) + " TRAMITES ACEPTADOS");
     }
 
 }
