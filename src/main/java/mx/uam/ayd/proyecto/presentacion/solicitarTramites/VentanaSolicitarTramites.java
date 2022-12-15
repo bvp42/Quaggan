@@ -18,7 +18,6 @@ import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
-import net.bytebuddy.asm.Advice.OffsetMapping.Factory.Illegal;
 
 @Component
 public class VentanaSolicitarTramites extends Pantalla {

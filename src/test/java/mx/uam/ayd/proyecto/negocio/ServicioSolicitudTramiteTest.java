@@ -253,7 +253,7 @@ class ServicioSolicitudTramiteTest {
 	}
 
 	@Test
-	void enviarSolicitud() {
+	void testEnviarSolicitud() {
 		TipoTramite tipoTramiteValido = new TipoTramite();
 		tipoTramiteValido.setNombreTramite("Licencia");
 		String[] listaRequerimientos = { "Doc A", "Doc B" };
@@ -313,14 +313,55 @@ class ServicioSolicitudTramiteTest {
 					servicio.enviarSolicitud(tipoTramiteValido, listaPathsValidos, agremiadoValido),
 					"No devolvió un obj Agremiado");
 			assertInstanceOf(SolicitudTramite.class,
-					servicio.enviarSolicitud(tipoTramiteValido, listaPathsValidos, agremiadoValido).getSolicitudActiva(),
+					servicio.enviarSolicitud(tipoTramiteValido, listaPathsValidos, agremiadoValido)
+							.getSolicitudActiva(),
 					"No se estableció la solicitud de tramite activa");
-			assertFalse(servicio.enviarSolicitud(tipoTramiteValido, listaPathsValidos, agremiadoValido).isAccesoATramites());
+			assertFalse(servicio.enviarSolicitud(tipoTramiteValido, listaPathsValidos, agremiadoValido)
+					.isAccesoATramites());
 
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
 
+	}
+
+	@Test
+	void testCorreccionSolicitada() {
+		Agremiado agremiadoValido = new Agremiado();
+		SolicitudTramite solicitudActiva = new SolicitudTramite();
+		agremiadoValido.setSolicitudActiva(solicitudActiva);
+		String motivoValido = "El documento adjunto corresponde a otra persona";
+
+		/**
+		 * Caso 1: Agremiado invalido
+		 */
+		try {
+			assertThrows(IllegalArgumentException.class, () -> servicio.correccionSolicitada(null, motivoValido),
+					"Debió lanzar IllegalArgumentException");
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+
+		/**
+		 * Caso 2: Motivo inválido
+		 */
+		try {
+			assertThrows(IllegalArgumentException.class, () -> servicio.correccionSolicitada(agremiadoValido, null),
+					"Debió lanzar IllegalArgumentException");
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+
+		/**
+		 * Todos los parametros de entrada son válidos
+		 */
+		try {
+			assertEquals("Erronea", servicio.correccionSolicitada(agremiadoValido, motivoValido).getSolicitudActiva().getEstado());
+			assertEquals(motivoValido, servicio.correccionSolicitada(agremiadoValido, motivoValido).getSolicitudActiva().getMotivoCorrecion());
+			assertInstanceOf(Agremiado.class, servicio.correccionSolicitada(agremiadoValido, motivoValido));
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 
 }
