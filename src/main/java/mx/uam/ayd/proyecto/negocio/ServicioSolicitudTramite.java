@@ -201,24 +201,24 @@ public class ServicioSolicitudTramite {
                 repositoryDocumento.save(temp);
                 requisitos.add(temp);
             }
-    
+
             SolicitudTramite nuevaSolicitud = new SolicitudTramite();
             nuevaSolicitud.setEstado("Pendiente");
             nuevaSolicitud.setTipoTramite(tipoTramiteSeleccionado);
             nuevaSolicitud.setFechaSolicitud(new Date(System.currentTimeMillis()));
             nuevaSolicitud.setRequisitos(requisitos);
             nuevaSolicitud.setSolicitante(agremiado);
-    
+
             solicitudTramiteRepository.save(nuevaSolicitud);
-    
+
             agremiado.nuevaSolicitudRealizada(nuevaSolicitud);
-    
+
             repositoryAgremiado.save(agremiado);
-    
+
             return agremiado;
-            
+
         } catch (IOException e) {
-           throw e;
+            throw e;
         } catch (IllegalArgumentException e) {
             throw e;
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -229,12 +229,23 @@ public class ServicioSolicitudTramite {
 
     }
 
-    public List<SolicitudTramite> findBySolicitante(Agremiado agremiado) {
-        return solicitudTramiteRepository.findBySolicitanteAndEstado(agremiado, "Aceptado");
-    }
+    /**
+     * Método que se encarga de administrar las correciones que son solicitadas por
+     * los agremiados tras recibir un documento de trámite que presente errores
+     * 
+     * @param agremiado       Agremiado con sesión iniciada quien ha solicitado una
+     *                        revision de un trámite que considera erroneo
+     * @param motivoCorrecion el motivo que ha seleccionado en la interfaz donde se
+     *                        detalla los motivos por los cuales solicita la
+     *                        correcion
+     * @return el agremiado con los datos actualizados
+     * @throws IllegalArgumentException
+     */
+    public Agremiado correccionSolicitada(Agremiado agremiado, String motivoCorrecion) throws IllegalArgumentException {
+        if (agremiado == null || motivoCorrecion == null) {
+            throw new IllegalArgumentException("Argumentos inválidos");
+        }
 
-    public Agremiado correccionSolicitada(Agremiado agremiado, String motivoCorrecion) {
-        
         SolicitudTramite solicitudActiva = agremiado.getSolicitudActiva();
 
         solicitudActiva.setMotivoCorrecion(motivoCorrecion);
@@ -245,9 +256,13 @@ public class ServicioSolicitudTramite {
 
         agremiado.setSolicitudActiva(solicitudActiva);
         repositoryAgremiado.save(agremiado);
-        
+
         return agremiado;
-        
+
+    }
+
+    public List<SolicitudTramite> findBySolicitanteAndEstado(Agremiado agremiado, String estado) {
+        return solicitudTramiteRepository.findBySolicitanteAndEstado(agremiado, estado);
     }
 
 }

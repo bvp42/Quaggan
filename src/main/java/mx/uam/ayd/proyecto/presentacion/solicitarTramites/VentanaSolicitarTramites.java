@@ -18,6 +18,7 @@ import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
+import net.bytebuddy.asm.Advice.OffsetMapping.Factory.Illegal;
 
 @Component
 public class VentanaSolicitarTramites extends Pantalla {
@@ -332,7 +333,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         txtFieldMotivoCorreccion = new JTextField();
         txtFieldMotivoCorreccion.setFont(new Font("Arial", Font.PLAIN, 15));
         txtFieldMotivoCorreccion.setEnabled(false);
-        
+
         scrollPaneMotivoCorrecion = new JScrollPane(txtFieldMotivoCorreccion);
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -388,7 +389,7 @@ public class VentanaSolicitarTramites extends Pantalla {
      * sesión y el apuntador al control
      * 
      * @param agremiado Agremiado con sesión iniciada
-     * @param control apuntador a ControlSolicitarTramites
+     * @param control   apuntador a ControlSolicitarTramites
      */
     void inicia(Agremiado agremiado, ControlSolicitarTramites control) {
         this.agremiado = agremiado;
@@ -397,17 +398,18 @@ public class VentanaSolicitarTramites extends Pantalla {
 
     /**
      * Actualiza el apuntador de agremiado luego de una actualiación
+     * 
      * @param agremiado
      */
-    void actualizarAgremiado (Agremiado agremiado) {
+    void actualizarAgremiado(Agremiado agremiado) {
         this.agremiado = agremiado;
     }
 
     /**
      * Método que muestra la interfaz que permite solicitar un trámite
      * 
-     * @param tramites  Lista que contiene los tipos de tramites que pueden
-     *                  solicitarse
+     * @param tramites Lista que contiene los tipos de tramites que pueden
+     *                 solicitarse
      */
     void ventanaSolicitarTramite(List<TipoTramite> tramites) {
 
@@ -471,7 +473,7 @@ public class VentanaSolicitarTramites extends Pantalla {
                 txtFieldDetallesAdicionales.setEnabled(true);
                 scrollPaneMotivoCorrecion.setVisible(false);
                 break;
-            
+
             case "Erronea":
                 btnDescargarDocumentoTramite.setVisible(false);
                 btnAceptarTramite.setVisible(false);
@@ -546,6 +548,10 @@ public class VentanaSolicitarTramites extends Pantalla {
 
     }
 
+    /**
+     * Método que comunica al control el trámite que se ha seleccionado luego de dar
+     * clic al botón siguiente de la interfaz para solicitar un trámite
+     */
     void btnSiguienteSolicitarTramite() {
         lblDocumentosSeleccionados_.setText("Ningún documento seleccionado.");
         control.adjuntarDocumentos(listaTramites.get(comboBoxTramitesDisponibles.getSelectedIndex()));
@@ -666,19 +672,30 @@ public class VentanaSolicitarTramites extends Pantalla {
 
     }
 
+    /**
+     * Método que realiza las actualizaciones de datos necesarias luego de que un
+     * agremiado haya recibido su documento de trámite finalizado, y lo haya
+     * aceptado
+     */
     void aceptarTramite() {
         int opcionSeleccionada = JOptionPane.showConfirmDialog(this,
                 "¿Esta seguro de dar por finalizado este trámite? \n Una vez acepte su documento, no podrá solicitar correción alguna",
                 "Confirmar selección", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (opcionSeleccionada == 0) {
-
-            control.documentoAceptado(agremiado);
+            try {
+                control.documentoAceptado(agremiado);
+            } catch (IllegalArgumentException e) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido un error", "Error", JOptionPane.ERROR_MESSAGE);
+            }
 
         }
 
     }
 
+    /**
+     * Actualiza los elementos de la interfaz acorde a la operación invocada
+     */
     void elegirMotivoCorrecion() {
         panelCorreciones.setVisible(true);
         btnAceptarTramite.setVisible(false);
@@ -694,6 +711,9 @@ public class VentanaSolicitarTramites extends Pantalla {
         txtFieldDetallesAdicionales.setText("");
     }
 
+    /**
+     * Actualiza los elementos de la interfaz acorde a la operación invocada
+     */
     void cancelarMotivoCorreccion() {
         panelCorreciones.setVisible(false);
         btnAceptarTramite.setVisible(true);
@@ -707,6 +727,10 @@ public class VentanaSolicitarTramites extends Pantalla {
         txtFieldDetallesAdicionales.setText("");
     }
 
+    /**
+     * Mpetodo que comunica al control sobre una solicitud de correcion sobre un
+     * trámite marcado previamente como finalizado
+     */
     void enviarCorrecion() {
         int opcionSeleccionada = JOptionPane.showConfirmDialog(this,
                 "¿Esta seguro de la información seleccionada para realizar la corrección de su trámite?",
@@ -721,7 +745,11 @@ public class VentanaSolicitarTramites extends Pantalla {
 
             String motivoCorrecion = comboBoxMotivoCorrecion.getSelectedItem() + ". "
                     + txtFieldDetallesAdicionales.getText();
-            control.correccionSolicitada(this.agremiado, motivoCorrecion);
+            try {
+                control.correccionSolicitada(this.agremiado, motivoCorrecion);
+            } catch (IllegalArgumentException e) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido un error", "Error", JOptionPane.ERROR_MESSAGE);
+            }
 
         }
     }

@@ -64,12 +64,28 @@ public class ServicioAgremiado {
         return agremiado.isAccesoATramites();
     }
 
+    /**
+     * Método que regresa la solicitud activa de un agremiado
+     * 
+     * @param agremiado agremiado con sesión iniciada
+     * @return la solicitud de trámite activa
+     */
     public SolicitudTramite getSolicitudActiva(Agremiado agremiado) {
         return agremiado.getSolicitudActiva();
     }
 
-    public Agremiado documentoAceptado(Agremiado agremiado) {
+    /**
+     * @param agremiado Agremiado con sesión iniciada que ha aceptado un documento
+     *                  de trámite
+     * @return el agremiado con los datos actualizados: reestablecido su acceso a
+     *         trámites y desligada la solicitud de trámite activa
+     * @throws IllegalArgumentException
+     */
+    public Agremiado documentoAceptado(Agremiado agremiado) throws IllegalArgumentException {
 
+        if (agremiado == null) {
+            throw new IllegalArgumentException("Argumento no válido");
+        }
         agremiado.setAccesoATramites(true);
         agremiado.setSolicitudActiva(null);
         repositoryAgremiado.save(agremiado);

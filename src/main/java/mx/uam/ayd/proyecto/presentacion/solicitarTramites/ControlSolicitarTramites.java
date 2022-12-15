@@ -44,7 +44,7 @@ public class ControlSolicitarTramites {
      * @param agremiado agremiado con sesión iniciada
      */
     public void inicia(Agremiado agremiado) {
-        
+
         ventana.inicia(agremiado, this);
 
         if (servicioAgremiado.getAccesoATramites(agremiado)) {
@@ -98,22 +98,49 @@ public class ControlSolicitarTramites {
 
     }
 
-    void documentoAceptado(Agremiado agremiado) {
-        Agremiado agremiadoActualizado = servicioAgremiado.documentoAceptado(agremiado);
-        List<TipoTramite> tramites = servicioTipoTramite.findAll();
-        ventana.actualizarAgremiado(agremiadoActualizado);
-        ventana.ventanaSolicitarTramite(tramites);
+    /**
+     * Método que comunica al servicio correspondiente sobre un trámite que ha sido
+     * aceptado en su totalidad por el agremiado
+     * 
+     * @param agremiado Agremiado con sesión iniciada que ha aceptado un documento
+     *                  de trámite
+     * @throws IllegalArgumentException
+     */
+    void documentoAceptado(Agremiado agremiado) throws IllegalArgumentException {
+        try {
+            Agremiado agremiadoActualizado = servicioAgremiado.documentoAceptado(agremiado);
+            List<TipoTramite> tramites = servicioTipoTramite.findAll();
+            ventana.actualizarAgremiado(agremiadoActualizado);
+            ventana.ventanaSolicitarTramite(tramites);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
+    }
+
+    /**
+     * Método que comunica al servicio correspondiente una solicitud de correcion
+     * sobre un trámite marcado anteriormente como finalizado
+     * 
+     * @param agremiado       Agremiado con sesión iniciada quien ha solicitado la
+     *                        correcion
+     * @param motivoCorrecion motivo por el que solicita la correccion, seleccionado
+     *                        desde la interfaz correspondiente
+     * @throws IllegalArgumentException
+     */
+    public void correccionSolicitada(Agremiado agremiado, String motivoCorrecion) throws IllegalArgumentException {
+        try {
+            Agremiado agremiadoActualizado = servicioSolicitudTramite.correccionSolicitada(agremiado, motivoCorrecion);
+            ventana.actualizarAgremiado(agremiadoActualizado);
+            ventana.ventanaTramiteActivo(agremiadoActualizado.getSolicitudActiva());
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
     }
 
     public String getTramitesCompletados(Agremiado agremiado) {
-        List<SolicitudTramite> tramitesCompletados = servicioSolicitudTramite.findBySolicitante(agremiado);
+        List<SolicitudTramite> tramitesCompletados = servicioSolicitudTramite.findBySolicitanteAndEstado(agremiado,
+                "Aceptado");
         return String.valueOf(tramitesCompletados.size());
-    }
-
-    public void correccionSolicitada(Agremiado agremiado, String motivoCorrecion) {
-        Agremiado agremiadoActualizado = servicioSolicitudTramite.correccionSolicitada(agremiado, motivoCorrecion);
-        ventana.actualizarAgremiado(agremiadoActualizado);
-        ventana.ventanaTramiteActivo(agremiadoActualizado.getSolicitudActiva());
     }
 
 }
