@@ -128,7 +128,7 @@ public class VentanaPrincipal extends JFrame {
 				borrarAgremiado.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e){
-						//control.borrarAgremiado();			
+						control.borrarAgremiado();			
 					}
 				});
 
