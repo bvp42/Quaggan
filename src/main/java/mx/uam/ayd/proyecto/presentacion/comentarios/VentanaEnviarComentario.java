@@ -3,30 +3,30 @@ package mx.uam.ayd.proyecto.presentacion.comentarios;
 import java.awt.GridBagLayout;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
-
 import org.springframework.stereotype.Component;
-
 import lombok.extern.slf4j.Slf4j;
 import mx.uam.ayd.proyecto.negocio.modelo.Cita;
+import mx.uam.ayd.proyecto.negocio.modelo.Comentario;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 import mx.uam.ayd.proyecto.util.Filtro;
-
 import java.awt.Rectangle;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -39,30 +39,50 @@ import java.awt.event.MouseEvent;
 @Component
 public class VentanaEnviarComentario extends Pantalla {
 	
-	private static final String[] columnas = {"Fecha", "ID comentario", "Estado"};
-	
-	private ControlEnviarComentario controlador;
-	
-	private List<Filtro> filtros;
-
-	private final JTable table;
-	private final JPanel panelFiltros;
+	private List<Comentario> comentarios;
+    private JList<String> listaComentarios;
+    private JScrollPane barraDespl;
+	private int index;
+	private JTextArea textComentario, textRespuesta, textArea;
+	private JLabel labelComentario, labelRespuesta, labelExplicacion1, labelExplicacion2;
 	private final JButton btnCancelar;
 	private final JButton btnEnviar;
-	private final JButton btnAgregarFiltro;
-	private final JScrollPane scrollPane_1;
 	private final JButton btnHacerComentario;
-	private JTextArea textArea;
-	
 
 	public VentanaEnviarComentario() {
 		setBounds(new Rectangle(100, 100, 500, 500));
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{0, 420, 0, 0};
-		gridBagLayout.rowHeights = new int[]{30, 1, 1, 212, 0, 0};
-		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		setLayout(gridBagLayout);
+        setLayout(null);
+
+		labelExplicacion1 = new JLabel();
+        labelExplicacion1.setText("Comentarios:");
+        add(labelExplicacion1);
+        labelExplicacion1.setBounds(0, 0, 100, 20);
+
+		labelExplicacion2 = new JLabel();
+        labelExplicacion2.setText("Ecribe 1 comentario maximo 200 palabras mimino 1 palabra:");
+        add(labelExplicacion2);
+        labelExplicacion2.setBounds(180, 30, 400, 20);
+		labelExplicacion2.setVisible(false);
+
+		labelComentario = new JLabel();
+        labelComentario.setText("Comentario:");
+        add(labelComentario);
+        labelComentario.setBounds(170, 30, 100, 20);
+
+        textComentario = new JTextArea();
+		add(textComentario);
+        textComentario.setBounds(170,60, 500, 150);
+        textComentario.setEnabled(false);
+
+        labelRespuesta = new JLabel();
+        labelRespuesta.setText("Respuesta:");
+        add(labelRespuesta);
+        labelRespuesta.setBounds(170, 210, 100, 20);
+
+        textRespuesta = new JTextArea();
+        add(textRespuesta);
+        textRespuesta.setBounds(170, 230, 500, 150);
+		textRespuesta.setEnabled(false);
 
 		btnHacerComentario = new JButton("Hacer un comentario");
 		btnHacerComentario.addMouseListener(new MouseAdapter() {
@@ -71,21 +91,124 @@ public class VentanaEnviarComentario extends Pantalla {
 				btnHacerComentario.setVisible(false);
 				btnCancelar.setVisible(true);
 				btnEnviar.setVisible(true);
-				//btnAgregarFiltro.setVisible(true);
+				barraDespl.setVisible(false);
 				textArea.setVisible(true);
-				
-				gridBagLayout.rowHeights[0] = 1;
-				gridBagLayout.rowHeights[1] = 152;
-				gridBagLayout.rowHeights[2] = 40;
+				textRespuesta.setVisible(false);
+				labelRespuesta.setVisible(false);
+				textComentario.setVisible(false);
+				labelComentario.setVisible(false);
+				labelExplicacion2.setVisible(true);
+				labelExplicacion1.setVisible(false);
 			}
 		});
-		GridBagConstraints gbc_btnHacerComentario = new GridBagConstraints();
-		gbc_btnHacerComentario.anchor = GridBagConstraints.SOUTHWEST;
-		gbc_btnHacerComentario.insets = new Insets(0, 0, 5, 5);
-		gbc_btnHacerComentario.gridx = 1;
-		gbc_btnHacerComentario.gridy = 0;
-		add(btnHacerComentario, gbc_btnHacerComentario);
-		
+		add(btnHacerComentario);
+        btnHacerComentario.setBounds(450, 0, 200, 30);
+
+		listaComentarios = new JList<String>();
+        barraDespl = new JScrollPane(listaComentarios);
+        add(barraDespl);
+        barraDespl.setBounds(0, 30, 160, 400);
+
+		listaComentarios.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                index = listaComentarios.getSelectedIndex();
+                //Comentario comentarioSeleccionado;
+                textComentario.setText(comentarios.get(index).getContenido());
+                textRespuesta.setText(comentarios.get(index).getRespuesta());
+                //labelEstado.setText("Estado: " + comentarios.get(index).getEstado());
+            }
+        });
+
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setVisible(false);
+		btnCancelar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				btnHacerComentario.setVisible(true);
+				btnCancelar.setVisible(false);
+				btnEnviar.setVisible(false);
+				
+				textArea.setText("");
+				
+				barraDespl.setVisible(true);
+				textArea.setVisible(false);
+				textRespuesta.setVisible(true);
+				labelRespuesta.setVisible(true);
+				textComentario.setVisible(true);
+				labelComentario.setVisible(true);
+				labelExplicacion2.setVisible(false);
+				labelExplicacion1.setVisible(true);
+			}
+		});
+		add(btnCancelar);
+        btnCancelar.setBounds(100, 400, 200, 30);
+
+		btnEnviar = new JButton("Enviar");
+		btnEnviar.setVisible(false);
+		btnEnviar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				//JOptionPane.showMessageDialog(null, "Error, el mensaje debe tener maximo 500 palabras ");
+				
+				String s = textArea.getText();
+				//hacer un contador de palabras 
+				
+				int contador = 1, pos;
+				s = s.trim(); //eliminar los posibles espacios en blanco al principio y al final                              
+				if (s.isEmpty()) { //si la cadena está vacía
+					contador = 0;
+				} else {
+						pos = s.indexOf(" "); //se busca el primer espacio en blanco
+						while (pos != -1) {   //mientras que se encuentre un espacio en blanco
+							contador++;    //se cuenta una palabra
+							pos = s.indexOf(" ", pos + 1); //se busca el siguiente espacio en blanco                       
+						}                                     //a continuación del actual
+				} 
+
+				if(contador == 0){
+					JOptionPane.showMessageDialog(null, "Error, el mensaje debe tener minimo 1 palabra");
+				}else if(contador>200){
+					JOptionPane.showMessageDialog(null, "Error, el mensaje debe tener maximo 200 palabras ");
+				}else{
+					//guardar comentario:
+					var Objeto = new Date();
+					var fecha = Objeto.toLocaleString();
+					JOptionPane.showMessageDialog(null, "fecha: " + fecha + "  palabras: " + contador);
+					
+
+					JOptionPane.showMessageDialog(null, "Enviado correctamente ");
+					btnHacerComentario.setVisible(true);
+					btnCancelar.setVisible(false);
+					btnEnviar.setVisible(false);
+					
+					textArea.setText("");
+					
+					barraDespl.setVisible(true);
+					textArea.setVisible(false);
+					textRespuesta.setVisible(true);
+					labelRespuesta.setVisible(true);
+					textComentario.setVisible(true);
+					labelComentario.setVisible(true);
+					labelExplicacion2.setVisible(false);
+					labelExplicacion1.setVisible(true);
+					
+					//gridBagLayout.rowHeights[0] = 30;
+					//gridBagLayout.rowHeights[1] = 1;
+					//gridBagLayout.rowHeights[2] = 1; 
+				}
+			}
+		});
+		add(btnEnviar);
+        btnEnviar.setBounds(400, 400, 200, 30);
+
+		textArea = new JTextArea();
+		textArea.setVisible(false);
+		add(textArea);
+		textArea.setBounds(100, 60, 500, 300);
+
+		/* 
+		 
 		scrollPane_1 = new JScrollPane();
 		scrollPane_1.setVisible(false);
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
@@ -240,69 +363,25 @@ public class VentanaEnviarComentario extends Pantalla {
 			}
 		));
 		scrollPane.setViewportView(table);
+		*/
 	}
 	
-	public void muestra(ControlEnviarComentario controlador) {
-		
-		this.controlador = controlador;
-		
-		filtros = new ArrayList<>();
-		panelFiltros.removeAll();
-		agregarFiltro();
-		
-		setVisible(true);
-	}
+	void muestra(List<Comentario> comentarios) {
+
+        this.comentarios = comentarios;
+
+        String[] datosListaComentarios = new String[comentarios.size()];
+
+        int i = 0;
+        for (Comentario comentario : comentarios) {
+            datosListaComentarios[i] = comentario.getIdComentario()+ " - " + comentario.getFecha();
+            i++;
+        }
+
+        listaComentarios.setListData(datosListaComentarios);
+        setVisible(true);
+    }
 	
 	
-	private void agregarFiltro() {
-		var componenteFiltro = new ComponenteFiltro();
-		filtros.add(componenteFiltro.getFiltro());
-		
-		log.info("filtros = {}", filtros);
-		
-		componenteFiltro.addCambioFiltroListener(filtro -> {
-			log.info("Aplicando filtro {}", filtro);
-			actualizaCitas();
-		});
-		
-		componenteFiltro.getBtnEliminar().addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				panelFiltros.remove(componenteFiltro);
-				filtros.remove(componenteFiltro.getFiltro());
-
-				log.info("filtros = {}", filtros);
-
-				actualizaCitas();
-			}
-		});
-		
-		panelFiltros.add(componenteFiltro);
-		
-		actualizaCitas();
-		
-	}
 	
-	private void actualizaCitas() {
-		var citas = controlador.getCitas(new ArrayList<>(filtros));
-		mostrarCitas(citas);
-	}
-	
-	private void mostrarCitas(List<Cita> citas) {
-		var filas = citas.stream()
-				.sorted()
-				.map(cita -> new Object[] {cita.getFecha().toString() + " - " + cita.getHora().toString(), cita.getAgremiado().getNombreCompleto(), cita.getMotivo()})
-				.toArray(Object[][]::new);
-
-		table.setModel(new DefaultTableModel(filas, columnas));
-
-		revalidate();
-		repaint();
-	}
-
-	public void cierra() {
-		setVisible(false);
-	}
-	
-
 }
