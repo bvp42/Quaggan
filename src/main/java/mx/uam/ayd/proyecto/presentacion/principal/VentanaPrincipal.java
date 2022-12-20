@@ -29,6 +29,7 @@ public class VentanaPrincipal extends JFrame {
 
 	GridBagConstraints gbc_contenido;
 	JButton btnAgregarAgremiado;
+	JButton btnborrarAgremiado;
 
 	/**
 	 * Create the frame.
@@ -56,9 +57,9 @@ public class VentanaPrincipal extends JFrame {
 		contentPane.add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[]{0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0};
+		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 119,0, 20, 0};
 		gbl_panel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0,0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 		
 		JButton btnInicio = new JButton("Inicio");
@@ -121,6 +122,24 @@ public class VentanaPrincipal extends JFrame {
 		panel.add(btnAgregarAgremiado, gbc_btnAgregarAgremiado);
 		btnAgregarAgremiado.setVisible(false);
 		
+		//Agrega boton de Borrar agremiado
+				JButton borrarAgremiado = new JButton("Borrar Agremiado");
+				btnborrarAgremiado = borrarAgremiado;
+				borrarAgremiado.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e){
+						//control.borrarAgremiado();			
+					}
+				});
+
+				GridBagConstraints gbc_borrarAgremiado = new GridBagConstraints();
+				gbc_borrarAgremiado.insets = new Insets(0, 0, 5, 0);
+				gbc_borrarAgremiado.fill = GridBagConstraints.HORIZONTAL;
+				gbc_borrarAgremiado.gridx = 0;
+				gbc_borrarAgremiado.gridy = 5;
+				panel.add(borrarAgremiado, gbc_borrarAgremiado);
+				borrarAgremiado.setVisible(false);
+		
 		//agrega boton de comentarios
 		JButton btnComentarios = new JButton("Comentarios");
 		btnComentarios.addMouseListener(new MouseAdapter() {
@@ -133,7 +152,7 @@ public class VentanaPrincipal extends JFrame {
 		GridBagConstraints gbc_btnComentarios = new GridBagConstraints();
 		gbc_btnComentarios.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnComentarios.gridx = 0;
-		gbc_btnComentarios.gridy = 6;
+		gbc_btnComentarios.gridy = 8;
 		panel.add(btnComentarios, gbc_btnComentarios);
 		
 		JButton btnPublicaciones = new JButton("Publicaciones");
@@ -179,4 +198,11 @@ public class VentanaPrincipal extends JFrame {
 	public void setVisibleBtnAgregarAgremiado(boolean visible){
 		btnAgregarAgremiado.setVisible(visible);
 	}
+
+	public void muestraBotonBorrarAgremiado(boolean estado) {
+		// TODO Auto-generated method stub
+		btnborrarAgremiado.setVisible(estado);
+	}
 }
+	
+	

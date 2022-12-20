@@ -99,12 +99,15 @@ public class ControlPrincipal {
 		ventanaInicio.muestra(this);
 		ventanaInicio.ActualizaVentanaInicio(empleado.getTipoEmpleado());
 		ventana.setVisibleBtnAgregarAgremiado(true);
+		//Valida que sea la encargada para mostrar el boton BorrarAgremiado
+		ventana.muestraBotonBorrarAgremiado(empleado.getTipoEmpleado()=="encargada");
 	}
 
 	public void cerrarSesion(){
 		empleado = null;
 		agremiado = null;
 		ventana.setVisibleBtnAgregarAgremiado(false);
+		ventana.muestraBotonBorrarAgremiado(false);
 	} 
 
 	public void agregarAgremiado(){
@@ -147,4 +150,11 @@ public class ControlPrincipal {
 		else if (empleado != null)
 			controlResponderComentario.inicia();
 	}
+
+	public void borrarAgremiado() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }
