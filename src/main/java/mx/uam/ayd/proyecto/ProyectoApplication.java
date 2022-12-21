@@ -264,6 +264,14 @@ public class ProyectoApplication {
 		aviso2.setContenido("Prueba 2");
 		aviso2.setFecha("2222-09-22");
 		repositoryAviso.save(aviso2);
+		
+		var empleadoNuevo = new Empleado();
+		empleadoNuevo.setId(987654321);
+		empleadoNuevo.setNombre("Bruno");
+		empleadoNuevo.setContraseña(controlPrincipal.encriptada("123")); 
+		empleadoNuevo.setApellidos("Diaz Hernandez");
+		empleadoNuevo.setTipoEmpleado("administrativo");
+		repositoryEmpleado.save(empleadoNuevo);
 
 		servicioDatosPrueba.generarDatos();
 	}
