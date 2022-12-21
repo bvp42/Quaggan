@@ -55,6 +55,10 @@ public class SolicitudTramite {
 
     private Date fechaFinalizacion;
 
+    private Date fechaCorrecion;
+    
+    private String motivoCorrecion;
+
     @Override
     public String toString() {
         

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import org.aspectj.lang.annotation.Before;
@@ -21,6 +22,7 @@ import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 
 @ExtendWith(MockitoExtension.class)
 public class ServicioAgremiadoTest {
+
 
 	@Mock
 	RepositoryAgremiado repositoryAgremiado;
@@ -125,5 +127,28 @@ public class ServicioAgremiadoTest {
 		assertFalse(resultado2);
 
 	}
+    @Test
+    void testDocumentoAceptado() {
+        Agremiado agremiado = new Agremiado();
+        /*
+         * Caso 1: Argumento inválido
+         */
+        try {
+            assertThrows(IllegalArgumentException.class, () -> servicioAgremiado.documentoAceptado(null),
+                    "Debió lanzar IllegalArgumentException");
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
 
+        /**
+         * Caso 2: Argumentos de entrada válidos
+         */
+        try {
+            assertTrue(servicioAgremiado.documentoAceptado(agremiado).isAccesoATramites(), "Debería ser true");
+            assertNull(servicioAgremiado.documentoAceptado(agremiado).getSolicitudActiva(),
+                    "No debería haber solicitud activa alguna");
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
 }
