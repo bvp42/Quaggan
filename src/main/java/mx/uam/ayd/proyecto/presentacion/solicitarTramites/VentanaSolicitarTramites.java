@@ -14,11 +14,13 @@ import java.nio.file.Path;
 
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 import mx.uam.ayd.proyecto.negocio.modelo.TipoTramite;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 
+@Slf4j
 @Component
 public class VentanaSolicitarTramites extends Pantalla {
 
@@ -32,18 +34,21 @@ public class VentanaSolicitarTramites extends Pantalla {
     private JLabel lblNorth, lblSeleccionarTramite, lblRequisitos, lblDocumentosSeleccionados,
             lblDocumentosSeleccionados_, lblNoSolicitud, lblNoSolicitud_, lblFechaSolicitud, lblFechaSolicitud_,
             lblTramiteSolicitado, lblTramiteSolicitado_, lblEstado, lblEstado_, lblTramitesCompletados,
-            lblMotivoCorrecion, lblDetallesAdicionales;
+            lblMotivoCorrecion, lblDetallesAdicionales, lblMotivoRechazo, lblMotivoRechazo_, lblDocsNecesarios,
+            lblDocumentosReadjuntados;
     private JButton btnHistorialTramites, btnSiguienteSolicitarTramite, btnAdjuntarDocumentos,
             btnCancelarAdjuntarDocumetos, btnEnviarSolicitud, btnDescargarDocumentoTramite, btnAceptarTramite,
-            btnSolicitarCorreccion, btnEnviarCorrecion, btnCancelarCorrecion;
+            btnSolicitarCorreccion, btnEnviarCorrecion, btnCancelarCorrecion, btnReadjuntarDocumetos,
+            btnEnviarSolRechazada;
     private JComboBox<String> comboBoxTramitesDisponibles, comboBoxMotivoCorrecion;
     private JTextField txtFieldDetallesAdicionales, txtFieldMotivoCorreccion;
     private JScrollPane scrollPaneMotivoCorrecion;
     private List<TipoTramite> listaTramites;
-    private JList<String> jListRequerimientos;
+    private JList<String> jListRequerimientos, jListRequerimientos_;
     private JFileChooser chooser;
     private FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PDF", "pdf");
     String[] listaVacia = { "Ningún documento seleccionado" };
+    private Font fuentePlana = new Font("Arial", Font.PLAIN, 15), fuenteItalica = new Font("Arial", Font.ITALIC, 15);
 
     public VentanaSolicitarTramites() {
         setBounds(new Rectangle(100, 100, 500, 500));
@@ -51,14 +56,14 @@ public class VentanaSolicitarTramites extends Pantalla {
 
         /* LBL NORTH */
         lblNorth = new JLabel("SISTEMA DE GESTIÓN DE TRÁMITES SINDICALES");
-        lblNorth.setFont(new Font("Arial", Font.BOLD, 15));
+        lblNorth.setFont(fuentePlana);
         lblNorth.setBorder(new EmptyBorder(10, 0, 10, 0));
         lblNorth.setHorizontalAlignment(SwingConstants.CENTER);
         add(lblNorth, BorderLayout.NORTH);
 
         /* BTN SOUTH */
         btnHistorialTramites = new JButton("Historial de trámites finalizados");
-        btnHistorialTramites.setFont(new Font("Arial", Font.BOLD, 15));
+        btnHistorialTramites.setFont(fuentePlana);
         btnHistorialTramites.setHorizontalAlignment(SwingConstants.CENTER);
         add(btnHistorialTramites, BorderLayout.SOUTH);
 
@@ -82,7 +87,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         lblSeleccionarTramite = new JLabel("Seleccionar trámite:");
-        lblSeleccionarTramite.setFont(new Font("Arial", Font.PLAIN, 15));
+        lblSeleccionarTramite.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridheight = 1;
@@ -90,7 +95,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelSolicitarTramite.add(lblSeleccionarTramite, gbc);
 
         comboBoxTramitesDisponibles = new JComboBox<String>();
-        comboBoxTramitesDisponibles.setFont(new Font("Arial", Font.PLAIN, 15));
+        comboBoxTramitesDisponibles.setFont(fuentePlana);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridheight = 1;
@@ -98,7 +103,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelSolicitarTramite.add(comboBoxTramitesDisponibles, gbc);
 
         lblRequisitos = new JLabel("Documentos necesarios:");
-        lblRequisitos.setFont(new Font("Arial", Font.PLAIN, 15));
+        lblRequisitos.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridheight = 1;
@@ -106,17 +111,16 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelSolicitarTramite.add(lblRequisitos, gbc);
 
         jListRequerimientos = new JList<String>();
-        jListRequerimientos.setFont(new Font("Arial", Font.PLAIN, 15));
+        jListRequerimientos.setFont(fuentePlana);
         jListRequerimientos.setEnabled(false);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridheight = 1;
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
         panelSolicitarTramite.add(jListRequerimientos, gbc);
 
         btnSiguienteSolicitarTramite = new JButton("Siguiente");
-        btnSiguienteSolicitarTramite.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnSiguienteSolicitarTramite.setFont(fuentePlana);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridheight = 1;
@@ -126,7 +130,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         /* ---------ELEMENTOS ADJUNTAR DOCUMENTOS */
 
         btnCancelarAdjuntarDocumetos = new JButton("Cancelar");
-        btnCancelarAdjuntarDocumetos.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnCancelarAdjuntarDocumetos.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridheight = 1;
@@ -134,7 +138,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelSolicitarTramite.add(btnCancelarAdjuntarDocumetos, gbc);
 
         btnAdjuntarDocumentos = new JButton("Adjuntar documentos");
-        btnAdjuntarDocumentos.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnAdjuntarDocumentos.setFont(fuentePlana);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridheight = 1;
@@ -142,7 +146,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelSolicitarTramite.add(btnAdjuntarDocumentos, gbc);
 
         lblDocumentosSeleccionados = new JLabel("Documentos seleccionados:");
-        lblDocumentosSeleccionados.setFont(new Font("Arial", Font.PLAIN, 15));
+        lblDocumentosSeleccionados.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridheight = 1;
@@ -150,7 +154,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelSolicitarTramite.add(lblDocumentosSeleccionados, gbc);
 
         lblDocumentosSeleccionados_ = new JLabel("Ningún documento seleccionado.");
-        lblDocumentosSeleccionados_.setFont(new Font("Arial", Font.ITALIC, 15));
+        lblDocumentosSeleccionados_.setFont(fuenteItalica);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridheight = 1;
@@ -158,7 +162,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelSolicitarTramite.add(lblDocumentosSeleccionados_, gbc);
 
         btnEnviarSolicitud = new JButton("Enviar solicitud de trámite");
-        btnEnviarSolicitud.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnEnviarSolicitud.setFont(fuentePlana);
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridheight = 1;
@@ -175,7 +179,7 @@ public class VentanaSolicitarTramites extends Pantalla {
 
         /* ---------ELEMENTOS TRAMITE ACTIVO */
         lblNoSolicitud = new JLabel("No. de solicitud:");
-        lblNoSolicitud.setFont(new Font("Arial", Font.PLAIN, 15));
+        lblNoSolicitud.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridheight = 1;
@@ -183,7 +187,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(lblNoSolicitud, gbc);
 
         lblNoSolicitud_ = new JLabel("-");
-        lblNoSolicitud_.setFont(new Font("Arial", Font.ITALIC, 15));
+        lblNoSolicitud_.setFont(fuenteItalica);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridheight = 1;
@@ -191,7 +195,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(lblNoSolicitud_, gbc);
 
         lblFechaSolicitud = new JLabel("Fecha de registro:");
-        lblFechaSolicitud.setFont(new Font("Arial", Font.PLAIN, 15));
+        lblFechaSolicitud.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridheight = 1;
@@ -199,7 +203,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(lblFechaSolicitud, gbc);
 
         lblFechaSolicitud_ = new JLabel("-");
-        lblFechaSolicitud_.setFont(new Font("Arial", Font.ITALIC, 15));
+        lblFechaSolicitud_.setFont(fuenteItalica);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridheight = 1;
@@ -207,7 +211,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(lblFechaSolicitud_, gbc);
 
         lblTramiteSolicitado = new JLabel("Tramite solicitado:");
-        lblTramiteSolicitado.setFont(new Font("Arial", Font.PLAIN, 15));
+        lblTramiteSolicitado.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridheight = 1;
@@ -215,7 +219,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(lblTramiteSolicitado, gbc);
 
         lblTramiteSolicitado_ = new JLabel("-");
-        lblTramiteSolicitado_.setFont(new Font("Arial", Font.ITALIC, 15));
+        lblTramiteSolicitado_.setFont(fuenteItalica);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridheight = 1;
@@ -223,7 +227,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(lblTramiteSolicitado_, gbc);
 
         lblEstado = new JLabel("Estado:");
-        lblEstado.setFont(new Font("Arial", Font.PLAIN, 15));
+        lblEstado.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridheight = 1;
@@ -231,7 +235,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(lblEstado, gbc);
 
         lblEstado_ = new JLabel("-");
-        lblEstado_.setFont(new Font("Arial", Font.ITALIC, 15));
+        lblEstado_.setFont(fuenteItalica);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridheight = 1;
@@ -239,7 +243,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(lblEstado_, gbc);
 
         btnDescargarDocumentoTramite = new JButton("Descargar documento de trámite");
-        btnDescargarDocumentoTramite.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnDescargarDocumentoTramite.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridheight = 1;
@@ -247,7 +251,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(btnDescargarDocumentoTramite, gbc);
 
         btnAceptarTramite = new JButton("Aceptar trámite");
-        btnAceptarTramite.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnAceptarTramite.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridheight = 1;
@@ -255,12 +259,70 @@ public class VentanaSolicitarTramites extends Pantalla {
         panelTramiteActivo.add(btnAceptarTramite, gbc);
 
         btnSolicitarCorreccion = new JButton("Solicitar corrección");
-        btnSolicitarCorreccion.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnSolicitarCorreccion.setFont(fuentePlana);
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         panelTramiteActivo.add(btnSolicitarCorreccion, gbc);
+
+        lblMotivoRechazo = new JLabel("Motivo de rechazo:");
+        lblMotivoRechazo.setFont(fuentePlana);
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(lblMotivoRechazo, gbc);
+
+        lblMotivoRechazo_ = new JLabel("-");
+        lblMotivoRechazo_.setFont(fuenteItalica);
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
+        panelTramiteActivo.add(lblMotivoRechazo_, gbc);
+
+        lblDocsNecesarios = new JLabel("Documentos necesarios");
+        lblDocsNecesarios.setFont(fuentePlana);
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(lblDocsNecesarios, gbc);
+
+        jListRequerimientos_ = new JList<String>();
+        jListRequerimientos_.setFont(fuentePlana);
+        jListRequerimientos_.setEnabled(false);
+        gbc.gridx = 1;
+        gbc.gridy = 7;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(jListRequerimientos_, gbc);
+
+        btnReadjuntarDocumetos = new JButton("Readjuntar documentos");
+        btnReadjuntarDocumetos.setFont(fuentePlana);
+        gbc.gridx = 0;
+        gbc.gridy = 8;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(btnReadjuntarDocumetos, gbc);
+
+        lblDocumentosReadjuntados = new JLabel("Ningún documento seleccionado");
+        lblDocumentosReadjuntados.setFont(fuenteItalica);
+        gbc.gridx = 1;
+        gbc.gridy = 8;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(lblDocumentosReadjuntados, gbc);
+
+        btnEnviarSolRechazada = new JButton("Reenviar solicitud");
+        btnEnviarSolRechazada.setFont(fuentePlana);
+        gbc.gridx = 0;
+        gbc.gridy = 9;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelTramiteActivo.add(btnEnviarSolRechazada, gbc);
+        btnEnviarSolRechazada.setEnabled(false);
 
         /* -----PANEL CORRECIONES */
         panelCorreciones = new JPanel();
@@ -272,7 +334,7 @@ public class VentanaSolicitarTramites extends Pantalla {
 
         /* ---------ELEMENTOS PANEL CORRECIONES */
         lblMotivoCorrecion = new JLabel("Motivo de la correción:");
-        lblMotivoCorrecion.setFont(new Font("Arial", Font.PLAIN, 15));
+        lblMotivoCorrecion.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridheight = 1;
@@ -285,7 +347,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         comboBoxMotivoCorrecion.addItem("Los datos en el documento son erróneos");
         comboBoxMotivoCorrecion.addItem("No puedo abrir/visualizar el archivo");
         comboBoxMotivoCorrecion.addItem("Otro");
-        comboBoxMotivoCorrecion.setFont(new Font("Arial", Font.PLAIN, 15));
+        comboBoxMotivoCorrecion.setFont(fuentePlana);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridheight = 1;
@@ -294,7 +356,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         comboBoxMotivoCorrecion.setVisible(false);
 
         lblDetallesAdicionales = new JLabel("Detalles adicionales (opcional):");
-        lblDetallesAdicionales.setFont(new Font("Arial", Font.PLAIN, 15));
+        lblDetallesAdicionales.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridheight = 1;
@@ -303,7 +365,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         lblDetallesAdicionales.setVisible(false);
 
         txtFieldDetallesAdicionales = new JTextField();
-        txtFieldDetallesAdicionales.setFont(new Font("Arial", Font.PLAIN, 15));
+        txtFieldDetallesAdicionales.setFont(fuentePlana);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridheight = 1;
@@ -312,7 +374,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         txtFieldDetallesAdicionales.setVisible(false);
 
         btnCancelarCorrecion = new JButton("Cancelar");
-        btnCancelarCorrecion.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnCancelarCorrecion.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridheight = 1;
@@ -321,7 +383,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         btnCancelarCorrecion.setVisible(false);
 
         btnEnviarCorrecion = new JButton("Enviar solicitud de correcion");
-        btnEnviarCorrecion.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnEnviarCorrecion.setFont(fuentePlana);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridheight = 1;
@@ -330,7 +392,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         btnEnviarCorrecion.setVisible(false);
 
         txtFieldMotivoCorreccion = new JTextField();
-        txtFieldMotivoCorreccion.setFont(new Font("Arial", Font.PLAIN, 15));
+        txtFieldMotivoCorreccion.setFont(fuentePlana);
         txtFieldMotivoCorreccion.setEnabled(false);
 
         scrollPaneMotivoCorrecion = new JScrollPane(txtFieldMotivoCorreccion);
@@ -351,7 +413,7 @@ public class VentanaSolicitarTramites extends Pantalla {
 
         /* ---------ELEMENTOS PANEL HISTORIAL TRAMITES */
         lblTramitesCompletados = new JLabel();
-        lblTramitesCompletados.setFont(new Font("Arial", Font.PLAIN, 15));
+        lblTramitesCompletados.setFont(fuentePlana);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridheight = 1;
@@ -380,6 +442,10 @@ public class VentanaSolicitarTramites extends Pantalla {
         btnEnviarCorrecion.addActionListener(e -> enviarCorrecion());
 
         btnHistorialTramites.addActionListener(e -> historialTramites());
+
+        btnReadjuntarDocumetos.addActionListener(e -> readjuntarDocumentos());
+
+        btnEnviarSolRechazada.addActionListener(e -> enviarSolRechazada());
 
     }
 
@@ -417,7 +483,7 @@ public class VentanaSolicitarTramites extends Pantalla {
         try {
             comboBoxTramitesDisponibles.removeAllItems();
         } catch (Exception e) {
-
+            log.info("Nada que remover");
         }
 
         for (TipoTramite tramite : listaTramites) {
@@ -471,6 +537,13 @@ public class VentanaSolicitarTramites extends Pantalla {
                 txtFieldDetallesAdicionales.setText("");
                 txtFieldDetallesAdicionales.setEnabled(true);
                 scrollPaneMotivoCorrecion.setVisible(false);
+                lblMotivoRechazo.setVisible(false);
+                lblMotivoRechazo_.setVisible(false);
+                btnReadjuntarDocumetos.setVisible(false);
+                lblDocsNecesarios.setVisible(false);
+                jListRequerimientos_.setVisible(false);
+                lblDocumentosReadjuntados.setVisible(false);
+                btnEnviarSolRechazada.setVisible(false);
                 break;
 
             case "Erronea":
@@ -488,6 +561,39 @@ public class VentanaSolicitarTramites extends Pantalla {
                 txtFieldDetallesAdicionales.setEnabled(false);
                 scrollPaneMotivoCorrecion.setVisible(true);
                 txtFieldMotivoCorreccion.setText(solicitudActiva.getMotivoCorrecion());
+                lblMotivoRechazo.setVisible(false);
+                lblMotivoRechazo_.setVisible(false);
+                btnReadjuntarDocumetos.setVisible(false);
+                lblDocsNecesarios.setVisible(false);
+                jListRequerimientos_.setVisible(false);
+                lblDocumentosReadjuntados.setVisible(false);
+                btnEnviarSolRechazada.setVisible(false);
+                break;
+
+            case "Rechazada":
+                btnDescargarDocumentoTramite.setVisible(false);
+                btnAceptarTramite.setVisible(false);
+                btnSolicitarCorreccion.setVisible(false);
+                lblMotivoCorrecion.setVisible(false);
+                comboBoxMotivoCorrecion.setVisible(false);
+                btnEnviarCorrecion.setVisible(false);
+                btnCancelarCorrecion.setVisible(false);
+                lblDetallesAdicionales.setVisible(false);
+                txtFieldDetallesAdicionales.setVisible(false);
+                txtFieldDetallesAdicionales.setText("");
+                scrollPaneMotivoCorrecion.setVisible(false);
+                lblMotivoRechazo.setVisible(true);
+                lblMotivoRechazo_.setVisible(true);
+                btnReadjuntarDocumetos.setVisible(true);
+                lblMotivoRechazo_.setText(this.solicitudActiva.getMotivoRechazo());
+                lblDocsNecesarios.setVisible(true);
+                jListRequerimientos_.setVisible(true);
+                jListRequerimientos_.setListData(this.solicitudActiva.getTipoTramite().getRequerimientos());
+                lblDocumentosReadjuntados.setVisible(true);
+                lblDocumentosReadjuntados.setText("Ningún documento seleccionado");
+
+                btnEnviarSolRechazada.setVisible(true);
+                btnEnviarSolRechazada.setEnabled(false);
                 break;
 
             default:
@@ -502,6 +608,13 @@ public class VentanaSolicitarTramites extends Pantalla {
                 txtFieldDetallesAdicionales.setVisible(false);
                 txtFieldDetallesAdicionales.setText("");
                 scrollPaneMotivoCorrecion.setVisible(false);
+                lblMotivoRechazo.setVisible(false);
+                lblMotivoRechazo_.setVisible(false);
+                btnReadjuntarDocumetos.setVisible(false);
+                lblDocsNecesarios.setVisible(false);
+                jListRequerimientos_.setVisible(false);
+                lblDocumentosReadjuntados.setVisible(false);
+                btnEnviarSolRechazada.setVisible(false);
                 break;
         }
 
@@ -727,7 +840,7 @@ public class VentanaSolicitarTramites extends Pantalla {
     }
 
     /**
-     * Mpetodo que comunica al control sobre una solicitud de correcion sobre un
+     * Método que comunica al control sobre una solicitud de correcion sobre un
      * trámite marcado previamente como finalizado
      */
     void enviarCorrecion() {
@@ -748,6 +861,69 @@ public class VentanaSolicitarTramites extends Pantalla {
                 control.correccionSolicitada(this.agremiado, motivoCorrecion);
             } catch (IllegalArgumentException e) {
                 JOptionPane.showMessageDialog(this, "Ha ocurrido un error", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }
+    }
+
+    /**
+     * Método que permite seleccionar nuevamente los documentos de trámite para una
+     * solicitud marcada como "Rechazada"
+     */
+    void readjuntarDocumentos() {
+        chooser = new JFileChooser();
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setFileFilter(filter);
+        chooser.setMultiSelectionEnabled(true);
+
+        int returnVal = chooser.showOpenDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+            String cadena = "";
+            if (chooser.getSelectedFiles().length > 1) {
+                cadena = chooser.getSelectedFiles().length + " elementos seleccionados";
+            } else {
+                cadena = "1 elemento seleccionado";
+            }
+
+            lblDocumentosReadjuntados.setText(cadena);
+            btnEnviarSolRechazada.setEnabled(true);
+
+        }
+    }
+
+    /**
+     * Método que comunica al control sobre un reenvio de documentos para una
+     * solicitud de trámite previamente marcada como "Rechazada"
+     */
+    void enviarSolRechazada() {
+        int opcionSeleccionada = JOptionPane.showConfirmDialog(this,
+                "¿Esta seguro de que sus documentos son correctos? \n Si selecciona \"Sí\", no podrá realizar cambio alguno",
+                "Confirmar selección", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (opcionSeleccionada == 0) {
+
+            try {
+
+                Path[] listaPaths = new Path[chooser.getSelectedFiles().length];
+
+                for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
+                    listaPaths[i] = chooser.getSelectedFiles()[i].toPath();
+                }
+
+                control.reenvioSolRechazada(listaPaths, agremiado);
+                // control.enviarSolicitud(tipoTramiteSeleccionado, listaPaths, agremiado);
+
+            } catch (Exception e) {
+                if (chooser.getSelectedFiles().length > 1) {
+                    JOptionPane.showMessageDialog(this, "Ha ocurrido un error, seleccione nuevamente los documentos",
+                            "Error al adjuntar los documentos", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Ha ocurrido un error, seleccione nuevamente el documento",
+                            "Error al adjuntar el documento", JOptionPane.ERROR_MESSAGE);
+                }
+
             }
 
         }

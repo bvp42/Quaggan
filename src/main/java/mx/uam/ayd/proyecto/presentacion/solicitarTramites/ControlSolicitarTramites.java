@@ -127,7 +127,7 @@ public class ControlSolicitarTramites {
      *                        desde la interfaz correspondiente
      * @throws IllegalArgumentException
      */
-    public void correccionSolicitada(Agremiado agremiado, String motivoCorrecion) throws IllegalArgumentException {
+    void correccionSolicitada(Agremiado agremiado, String motivoCorrecion) throws IllegalArgumentException {
         try {
             Agremiado agremiadoActualizado = servicioSolicitudTramite.correccionSolicitada(agremiado, motivoCorrecion);
             ventana.actualizarAgremiado(agremiadoActualizado);
@@ -137,7 +137,32 @@ public class ControlSolicitarTramites {
         }
     }
 
-    public String getTramitesCompletados(Agremiado agremiado) {
+    /**
+     * Método que comunica al servicio correspondiente sobre la actualización de los
+     * documentos sobre una solicitud de trámite marcada como rechazada
+     * 
+     * @param listaPaths lista con las rutas de los nuevos documentos
+     * @param agremiado  agremido con sesión iniciada y solicitud activa marcada
+     *                   como "Rechazada"
+     * @throws IOException
+     * @throws IllegalArgumentException
+     */
+    void reenvioSolRechazada(Path[] listaPaths, Agremiado agremiado)
+            throws IOException, IllegalArgumentException, ArrayIndexOutOfBoundsException {
+        try {
+            Agremiado agremiadoActualizado = servicioSolicitudTramite.reenvioSolRechazada(listaPaths, agremiado);
+            ventana.actualizarAgremiado(agremiadoActualizado);
+            ventana.ventanaTramiteActivo(agremiadoActualizado.getSolicitudActiva());
+        } catch (IOException e) {
+            throw e;
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw e;
+        }
+    }
+
+    String getTramitesCompletados(Agremiado agremiado) {
         List<SolicitudTramite> tramitesCompletados = servicioSolicitudTramite.findBySolicitanteAndEstado(agremiado,
                 "Aceptado");
         return String.valueOf(tramitesCompletados.size());

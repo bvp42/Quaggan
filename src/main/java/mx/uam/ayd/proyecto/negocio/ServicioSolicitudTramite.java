@@ -265,4 +265,61 @@ public class ServicioSolicitudTramite {
         return solicitudTramiteRepository.findBySolicitanteAndEstado(agremiado, estado);
     }
 
+    /**
+     * Método que recibe un agremiado con solicitud activa marcada como rechazada y
+     * reasigna la lista de requerimientos por una nueva lista cuyos archivos estan
+     * indicados por la lista de rutas
+     * 
+     * @param listaPaths lista con las rutas de los nuevos documentos a adjuntar
+     * @param agremiado  agremiado con sesión iniciada y con solicitud activa
+     *                   marcada como "Rechazada"
+     * @return el agremiado con datos actualizados
+     * @throws IllegalArgumentException
+     * @throws IOException
+     */
+    public Agremiado reenvioSolRechazada(Path[] listaPaths, Agremiado agremiado)
+            throws IllegalArgumentException, IOException {
+
+        if ((listaPaths == null) || (agremiado == null)) {
+            throw new IllegalArgumentException("Argumento nulo no válido");
+        }
+
+        SolicitudTramite solicitudActiva = agremiado.getSolicitudActiva();
+        List<Documento> requisitos = new ArrayList<Documento>();
+
+        try {
+
+            for (Documento documento : solicitudActiva.getRequisitos()) {
+                repositoryDocumento.delete(documento);
+            }
+
+            for (int i = 0; i < listaPaths.length; i++) {
+                Documento temp = servicioDocumento.creaDocumento(listaPaths[i],
+                        solicitudActiva.getTipoTramite().getRequerimientos()[i]);
+                repositoryDocumento.save(temp);
+                requisitos.add(temp);
+            }
+
+            solicitudActiva.setRequisitos(requisitos);
+            solicitudActiva.setEstado("Pendiente");
+
+            solicitudTramiteRepository.save(solicitudActiva);
+
+            agremiado.setSolicitudActiva(solicitudActiva);
+
+            repositoryAgremiado.save(agremiado);
+
+            return agremiado;
+
+        } catch (IOException e) {
+            throw e;
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
 }
