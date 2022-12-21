@@ -237,6 +237,7 @@ public class ProyectoApplication {
 		solicitud3.setMotivoRechazo("Archivos ilegibles");
 		solicitudTramiteRepository.save(solicitud3);
 
+		/***** Datos para ingresar como agremiado *****/
 		var agremiado = new Agremiado();
 		agremiado.setClave("1854265");
 		agremiado.setPassword(controlPrincipal.encriptada("."));
@@ -245,6 +246,7 @@ public class ProyectoApplication {
 		agremiado.setAccesoATramites(true);
 		repositoryAgremiado.save(agremiado);
 
+		/***** Datos para ingresar como empleado *****/
 		var empleado = new Empleado();
 		empleado.setId(987654321);
 		empleado.setNombre("Yanely");
@@ -253,6 +255,7 @@ public class ProyectoApplication {
 		empleado.setTipoEmpleado("encargada");
 		repositoryEmpleado.save(empleado);
 
+		/***** Datos para ingresar como agremiado *****/
 		var aviso1 = new Aviso();
 		aviso1.setIdAviso(9909);
 		aviso1.setContenido("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse at erat ac quam consequat tempus.");
