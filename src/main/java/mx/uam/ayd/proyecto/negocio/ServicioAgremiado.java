@@ -1,5 +1,7 @@
 package mx.uam.ayd.proyecto.negocio;
 
+import java.util.List;
+import java.util.Optional;
 import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,6 +76,27 @@ public class ServicioAgremiado {
         return agremiado.getSolicitudActiva();
     }
 
+/*
+ * borraAgremiado:Elimina a un agremiado mandando a llamar al repository devolviendo si existe o no en la base de datos
+ * 
+ * @param Una cadena de texto que representa la clave del empleado
+ * @return Devuelve verdadero o falso si lo encuentra o no en la base de datos despues de eliminarlo 
+ */
+	public Boolean borraAgremiado(String clave) {
+		
+		Agremiado objetoAgremiado = repositoryAgremiado.findByClave(clave);
+		repositoryAgremiado.delete(objetoAgremiado);
+		return (!repositoryAgremiado.existsByClave(clave));
+	}
+
+	public List<Agremiado> obtenerAgremiado(String nombre, int i) {
+		if (i==0) {
+			return repositoryAgremiado.findByNombre(nombre);
+		}else {
+			return repositoryAgremiado.findByApellidos(nombre);
+		}
+		
+	}
     /**
      * @param agremiado Agremiado con sesión iniciada que ha aceptado un documento
      *                  de trámite
