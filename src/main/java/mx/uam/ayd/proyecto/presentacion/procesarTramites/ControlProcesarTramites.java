@@ -73,6 +73,16 @@ public class ControlProcesarTramites {
     void tramiteFinalizado(SolicitudTramite solicitudSeleccionada) {
         ventana.ventanaTramiteFinalizado(solicitudSeleccionada);
     }
+    
+    /**
+     * Despliega la vista para un tramite erroneo
+     * 
+     * @param solicitudSeleccionada la solicitud seleccionada de la lista por el
+     *                              usuario
+     */
+    void tramiteErroneo(SolicitudTramite solicitudSeleccionada) {
+        ventana.tramiteErroneo(solicitudSeleccionada);
+    }
 
     /**
      * Indica a la vista analizar que opción fue marcada para realizar la llamada
