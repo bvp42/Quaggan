@@ -180,7 +180,11 @@ public class VentanaProcesarTramites extends Pantalla {
                     case "Finalizado":
                         control.tramiteFinalizado(solicitudSeleccionada);
                         break;
-
+                        
+                    case "Erronea":
+                        control.tramiteErroneo(solicitudSeleccionada);
+                        break;
+                        
                     default:
                         panelDatosSolicitud.setVisible(false);
                         break;
@@ -419,6 +423,54 @@ public class VentanaProcesarTramites extends Pantalla {
         lblSolicitante.setText("Solicitante: " + solicitudSeleccionada.getSolicitante().getNombre() + " "
                 + solicitudSeleccionada.getSolicitante().getApellidos() + " ("
                 + solicitudSeleccionada.getSolicitante().getClave() + ")");
+
+        panelDatosSolicitud.setVisible(true);
+
+    }
+    
+    /**
+     * Adapta la visibilidad de los elementos del panel para mostrar los datos de un
+     * trámite erroneo
+     * 
+     * @param solicitudSeleccionada solicitud seleccionada de la lista por el
+     *                              usuario
+     */
+    void tramiteErroneo(SolicitudTramite solicitudSeleccionada) {
+
+        this.solicitudSeleccionada = solicitudSeleccionada;
+
+        radioBtnAceptar.setVisible(false);
+        radioBtnRechazar.setVisible(false);
+        lblDocumentos.setVisible(true);
+        btnDescargarDocumentos.setVisible(true);
+        btnSiguiente.setVisible(false);
+        lblMotivoRechazo.setVisible(false);
+        comboBoxMotivosRechazo.setVisible(false);
+        btnConfirmarRechazo.setVisible(false);
+        btnAdjuntarDocTramite.setVisible(true);
+        lblArchivoAdjunto.setVisible(true);
+        lblArchivoAdjunto.setText("Ningún documento seleccionado");
+        btnFinalizarTramite.setVisible(true);
+        btnFinalizarTramite.setEnabled(false);
+
+        lblNo.setText("Número de solicitud: " + String.valueOf(solicitudSeleccionada.getIdSolicitud()));
+        lblFecha.setText("Fecha de registro: " + String.valueOf(solicitudSeleccionada.getFechaSolicitud()).substring(0, 10));
+
+        lblEstado.setText("Estado de la solicitud: " + solicitudSeleccionada.getEstado());
+        lblTipo.setText("Trámite solicitado: " + solicitudSeleccionada.getTipoTramite().getNombreTramite());
+
+        lblSolicitante.setText("Solicitante: " + solicitudSeleccionada.getSolicitante().getNombre() + " "
+                + solicitudSeleccionada.getSolicitante().getApellidos() + " ("
+                + solicitudSeleccionada.getSolicitante().getClave() + ")");
+
+        panelDatosSolicitud.setVisible(true);
+        documentosAdjuntos = solicitudSeleccionada.getRequisitos();
+
+        String strDocumentos = "";
+        for (Documento documento : documentosAdjuntos) {
+            strDocumentos += " " + documento.getTipoDocumento();
+        }
+        lblDocumentos.setText("Documentos: " + strDocumentos);
 
         panelDatosSolicitud.setVisible(true);
 
