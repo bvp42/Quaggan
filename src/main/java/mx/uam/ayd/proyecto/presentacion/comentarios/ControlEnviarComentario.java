@@ -1,7 +1,9 @@
 package mx.uam.ayd.proyecto.presentacion.comentarios;
 
 import mx.uam.ayd.proyecto.negocio.ServicioCita;
+import mx.uam.ayd.proyecto.negocio.ServicioComentario;
 import mx.uam.ayd.proyecto.negocio.modelo.Cita;
+import mx.uam.ayd.proyecto.negocio.modelo.Comentario;
 import mx.uam.ayd.proyecto.util.Filtro;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,10 @@ import java.util.List;
 @Component
 public class ControlEnviarComentario {
     
-    @Autowired
-    private ServicioCita servicioCita;
      
-    
+    @Autowired
+    private ServicioComentario servicioComentario;
+
     @Autowired
     private VentanaEnviarComentario ventanaEnviarComentario;
     
@@ -30,19 +32,7 @@ public class ControlEnviarComentario {
      * Inicia el controlador cambiado tambien
      */
     public void inicia(){
-    	ventanaEnviarComentario.muestra(this);
+        List<Comentario> comentarios = servicioComentario.recuperaTodos();
+    	ventanaEnviarComentario.muestra(comentarios);
     }
-
-    /**
-     * Devuelve una lista de citas según una lista de criterios
-     *
-     * @param filtros La lista de filtros
-     *
-     * @return La lista con las citas que coincidieron con todos los filtros
-      */
-    public List<Cita> getCitas(List<Filtro> filtros){
-        return servicioCita.getCitas(filtros);
-    }
-
-    
 }

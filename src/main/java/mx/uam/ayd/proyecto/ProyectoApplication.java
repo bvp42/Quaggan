@@ -133,8 +133,8 @@ public class ProyectoApplication {
 		comentario2.setIdComentario(2);
 		comentario2.setFecha("15 Ene 2021");
 		comentario2.setContenido("comentario 2 de prueba");
-		comentario2.setRespuesta("");
-		comentario2.setEstado("Sin revisar");
+		comentario2.setRespuesta("Respuesta de prueba :3");
+		comentario2.setEstado("Contestado");
 		comentarioRepository.save(comentario2);
 
 		Comentario comentario3 = new Comentario();
@@ -142,7 +142,7 @@ public class ProyectoApplication {
 		comentario3.setFecha("08 Jun 2000");
 		comentario3.setContenido("comentario 3 de prueba");
 		comentario3.setRespuesta("");
-		comentario3.setEstado("Sin revisar");
+		comentario3.setEstado("Revisado");
 		comentarioRepository.save(comentario3);
 
 		/***** Datos para Agremiado *****/
