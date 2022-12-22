@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import mx.uam.ayd.proyecto.negocio.modelo.Agremiado;
 import mx.uam.ayd.proyecto.negocio.modelo.Empleado;
 import mx.uam.ayd.proyecto.presentacion.AgregarAgremiado.ControlAgregarAgremiado;
+import mx.uam.ayd.proyecto.presentacion.BorrarAgremiado.ControlBorrarAgremiado;
 import mx.uam.ayd.proyecto.presentacion.Login.ControlLogin;
 import mx.uam.ayd.proyecto.presentacion.Login.VistaLogin;
 import mx.uam.ayd.proyecto.presentacion.agendarCita.ControlAgendarCita;
@@ -73,6 +74,9 @@ public class ControlPrincipal {
 	
 	@Autowired
 	ControlAgregarAgremiado controlAgregarAgremiado;
+	
+	@Autowired
+	ControlBorrarAgremiado controlBorrarAgremiado;
 	/**
 	 * Inicia el flujo de control de la ventana principal
 	 * 
@@ -99,7 +103,10 @@ public class ControlPrincipal {
 		ventanaInicio.muestra(this);
 		ventanaInicio.ActualizaVentanaInicio(empleado.getTipoEmpleado());
 		ventana.setVisibleBtnAgregarAgremiado(true);
+
 		ventana.setVisibleModidficarAviso(true);
+		//Valida que sea la encargada para mostrar el boton BorrarAgremiado
+		ventana.muestraBotonBorrarAgremiado(empleado.getTipoEmpleado()=="encargada");
 	}
 
 	public void cerrarSesion(){
@@ -107,6 +114,7 @@ public class ControlPrincipal {
 		agremiado = null;
 		ventana.setVisibleBtnAgregarAgremiado(false);
 		ventana.setVisibleModidficarAviso(false);
+		ventana.muestraBotonBorrarAgremiado(false);
 	} 
 
 	public void agregarAgremiado(){
@@ -153,4 +161,11 @@ public class ControlPrincipal {
 		else if (empleado != null)
 			controlResponderComentario.inicia();
 	}
+
+	public void borrarAgremiado() {
+		// TODO Auto-generated method stub
+		controlBorrarAgremiado.borrarAgremiado();
+	}
+
+	
 }

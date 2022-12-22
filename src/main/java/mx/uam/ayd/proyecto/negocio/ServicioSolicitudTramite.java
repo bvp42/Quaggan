@@ -201,24 +201,24 @@ public class ServicioSolicitudTramite {
                 repositoryDocumento.save(temp);
                 requisitos.add(temp);
             }
-    
+
             SolicitudTramite nuevaSolicitud = new SolicitudTramite();
             nuevaSolicitud.setEstado("Pendiente");
             nuevaSolicitud.setTipoTramite(tipoTramiteSeleccionado);
             nuevaSolicitud.setFechaSolicitud(new Date(System.currentTimeMillis()));
             nuevaSolicitud.setRequisitos(requisitos);
             nuevaSolicitud.setSolicitante(agremiado);
-    
+
             solicitudTramiteRepository.save(nuevaSolicitud);
-    
+
             agremiado.nuevaSolicitudRealizada(nuevaSolicitud);
-    
+
             repositoryAgremiado.save(agremiado);
-    
+
             return agremiado;
-            
+
         } catch (IOException e) {
-           throw e;
+            throw e;
         } catch (IllegalArgumentException e) {
             throw e;
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -227,6 +227,99 @@ public class ServicioSolicitudTramite {
             throw e;
         }
 
+    }
+
+    /**
+     * Método que se encarga de administrar las correciones que son solicitadas por
+     * los agremiados tras recibir un documento de trámite que presente errores
+     * 
+     * @param agremiado       Agremiado con sesión iniciada quien ha solicitado una
+     *                        revision de un trámite que considera erroneo
+     * @param motivoCorrecion el motivo que ha seleccionado en la interfaz donde se
+     *                        detalla los motivos por los cuales solicita la
+     *                        correcion
+     * @return el agremiado con los datos actualizados
+     * @throws IllegalArgumentException
+     */
+    public Agremiado correccionSolicitada(Agremiado agremiado, String motivoCorrecion) throws IllegalArgumentException {
+        if (agremiado == null || motivoCorrecion == null) {
+            throw new IllegalArgumentException("Argumentos inválidos");
+        }
+
+        SolicitudTramite solicitudActiva = agremiado.getSolicitudActiva();
+
+        solicitudActiva.setMotivoCorrecion(motivoCorrecion);
+        solicitudActiva.setEstado("Erronea");
+        solicitudActiva.setFechaCorrecion(new Date(System.currentTimeMillis()));
+
+        solicitudTramiteRepository.save(solicitudActiva);
+
+        agremiado.setSolicitudActiva(solicitudActiva);
+        repositoryAgremiado.save(agremiado);
+
+        return agremiado;
+
+    }
+
+    public List<SolicitudTramite> findBySolicitanteAndEstado(Agremiado agremiado, String estado) {
+        return solicitudTramiteRepository.findBySolicitanteAndEstado(agremiado, estado);
+    }
+
+    /**
+     * Método que recibe un agremiado con solicitud activa marcada como rechazada y
+     * reasigna la lista de requerimientos por una nueva lista cuyos archivos estan
+     * indicados por la lista de rutas
+     * 
+     * @param listaPaths lista con las rutas de los nuevos documentos a adjuntar
+     * @param agremiado  agremiado con sesión iniciada y con solicitud activa
+     *                   marcada como "Rechazada"
+     * @return el agremiado con datos actualizados
+     * @throws IllegalArgumentException
+     * @throws IOException
+     */
+    public Agremiado reenvioSolRechazada(Path[] listaPaths, Agremiado agremiado)
+            throws IllegalArgumentException, IOException {
+
+        if ((listaPaths == null) || (agremiado == null)) {
+            throw new IllegalArgumentException("Argumento nulo no válido");
+        }
+
+        SolicitudTramite solicitudActiva = agremiado.getSolicitudActiva();
+        List<Documento> requisitos = new ArrayList<Documento>();
+
+        try {
+
+            for (Documento documento : solicitudActiva.getRequisitos()) {
+                repositoryDocumento.delete(documento);
+            }
+
+            for (int i = 0; i < listaPaths.length; i++) {
+                Documento temp = servicioDocumento.creaDocumento(listaPaths[i],
+                        solicitudActiva.getTipoTramite().getRequerimientos()[i]);
+                repositoryDocumento.save(temp);
+                requisitos.add(temp);
+            }
+
+            solicitudActiva.setRequisitos(requisitos);
+            solicitudActiva.setEstado("Pendiente");
+
+            solicitudTramiteRepository.save(solicitudActiva);
+
+            agremiado.setSolicitudActiva(solicitudActiva);
+
+            repositoryAgremiado.save(agremiado);
+
+            return agremiado;
+
+        } catch (IOException e) {
+            throw e;
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
 }

@@ -17,11 +17,13 @@ import java.nio.file.Path;
 
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import mx.uam.ayd.proyecto.negocio.modelo.Documento;
 import mx.uam.ayd.proyecto.negocio.modelo.SolicitudTramite;
 import mx.uam.ayd.proyecto.presentacion.compartido.Pantalla;
 
-@Component
+    @Slf4j
+    @Component
 public class VentanaProcesarTramites extends Pantalla {
 
     private ControlProcesarTramites control;
@@ -221,6 +223,13 @@ public class VentanaProcesarTramites extends Pantalla {
         this.control = control;
         this.solicitudes = solicitudes_;
         this.solicitudesFinalizadas = solicitudesFinalizadas_;
+
+        try {
+            listaSolicitudes.clearSelection();
+
+        } catch (IndexOutOfBoundsException e) {
+            log.info("Exception esperada");
+        }
 
         String[] datosListaSolicitudes = new String[solicitudes.size()];
 
