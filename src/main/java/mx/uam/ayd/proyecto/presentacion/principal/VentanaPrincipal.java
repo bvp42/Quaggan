@@ -138,7 +138,7 @@ public class VentanaPrincipal extends JFrame {
 		gbc_btnModificarAviso.insets = new Insets(0, 0, 5, 0);
 		gbc_btnModificarAviso.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnModificarAviso.gridx = 0;
-		gbc_btnModificarAviso.gridy = 5;
+		gbc_btnModificarAviso.gridy = 6;
 		panel.add(btnModificarAviso, gbc_btnModificarAviso);
 		btnModificarAviso.setVisible(false);
 		
