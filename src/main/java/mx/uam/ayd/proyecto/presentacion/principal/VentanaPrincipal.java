@@ -222,6 +222,7 @@ public class VentanaPrincipal extends JFrame {
 
 	public void setVisibleModidficarAviso(boolean visible){
 		btnModificarAviso.setVisible(visible);
+	}
 
 	public void muestraBotonBorrarAgremiado(boolean estado) {
 		// TODO Auto-generated method stub
