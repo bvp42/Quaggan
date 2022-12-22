@@ -112,9 +112,9 @@ public class VistaLogin extends Pantalla {
 		gbcLogin.gridy = 4;
 		add(btnLogin,gbcLogin);
 
-		//tfUsuario.setText("Yanely");
-		//pfClave.setText("123");
-		//cbRol.setSelectedIndex(2);
+		tfUsuario.setText("Yanely");
+		pfClave.setText("123");
+		cbRol.setSelectedIndex(2);
 		/*******************************************************************************************/
     		/* Recuperar contraseña */
 		btnReCo = new JButton("Olvide mi Contraseña");

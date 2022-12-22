@@ -9,10 +9,8 @@ public interface AvisoRepository extends CrudRepository<Aviso, Long> {
 	
 
 	public List<Aviso> findAll();
-	
-
-	
-
-	
-
+	public Aviso findByIdAviso(int idAviso); 
+	public void deleteByIdAviso(int idAviso);
+	public void deleteAll();
+	public void delete(Aviso aviso);
 }

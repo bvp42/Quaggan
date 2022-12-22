@@ -15,9 +15,36 @@ public class ServicioAviso {
 	@Autowired
 	AvisoRepository avisoRepository;
 	Aviso aviso_publicado;
-	
+	Aviso aviso;
 	@Autowired
 	private ServicioFacebook servicioFacebook;
+	
+	/*
+	 * Evento para borrar un aviso. Es una funcinalidad para el administrador 
+	 * 
+	 * @autor Isaías Bonilla 
+	 * @param idAviso para eliminar el aviso con el id
+	 * 
+	 */
+	public void eliminaAviso(int idAviso){
+		aviso = new Aviso(); //Instancia un aviso
+		aviso = avisoRepository.findByIdAviso(idAviso);//Crea el aviso con el id 
+		avisoRepository.delete(aviso);//Elimina el aviso
+	}
+
+	/*
+	 * Evento para borrar un aviso. Es una funcinalidad para el administrador 
+	 * 
+	 * @autor Isaías Bonilla 
+	 * @param idAviso para actualizar el aviso
+	 * 
+	 */
+	public void modificar(int idAviso, String nuevocontenido){
+		aviso = new Aviso(); //Instancia un aviso
+		aviso = avisoRepository.findByIdAviso(idAviso);//Crea el aviso con el id
+		aviso.setContenido(nuevocontenido); 
+		avisoRepository.save(aviso);//Actualiza el aviso
+	}
 
 	private Calendar obtenerFecha() {
 		Calendar fecha = Calendar.getInstance();

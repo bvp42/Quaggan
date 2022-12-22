@@ -103,6 +103,8 @@ public class ControlPrincipal {
 		ventanaInicio.muestra(this);
 		ventanaInicio.ActualizaVentanaInicio(empleado.getTipoEmpleado());
 		ventana.setVisibleBtnAgregarAgremiado(true);
+
+		ventana.setVisibleModidficarAviso(true);
 		//Valida que sea la encargada para mostrar el boton BorrarAgremiado
 		ventana.muestraBotonBorrarAgremiado(empleado.getTipoEmpleado()=="encargada");
 	}
@@ -111,6 +113,7 @@ public class ControlPrincipal {
 		empleado = null;
 		agremiado = null;
 		ventana.setVisibleBtnAgregarAgremiado(false);
+		ventana.setVisibleModidficarAviso(false);
 		ventana.muestraBotonBorrarAgremiado(false);
 	} 
 
@@ -142,6 +145,10 @@ public class ControlPrincipal {
 
 		else if (empleado != null)
 			controlCrearPublicacion.inicia(empleado);
+	}
+
+	public void ModificarAviso(){
+		controlConsultarAvisos.inicia();
 	}
 
 	public String encriptada(String contraseña) throws NoSuchAlgorithmException{
