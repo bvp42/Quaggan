@@ -48,7 +48,7 @@ public class VentanaSolicitarTramites extends Pantalla {
     private JFileChooser chooser;
     private FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PDF", "pdf");
     String[] listaVacia = { "Ningún documento seleccionado" };
-    private Font fuentePlana = new Font("Arial", Font.PLAIN, 15), fuenteItalica = new Font("Arial", Font.ITALIC, 15);
+    private Font fuentePlana = new Font("Tahoma", Font.PLAIN, 11), fuenteItalica = new Font("Tahoma", Font.ITALIC, 11);
 
     public VentanaSolicitarTramites() {
         setBounds(new Rectangle(100, 100, 500, 500));
