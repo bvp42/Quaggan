@@ -265,6 +265,6 @@ public class ProyectoApplication {
 		aviso2.setFecha("2222-09-22");
 		repositoryAviso.save(aviso2);
 
-		servicioDatosPrueba.generarDatos();
+		//servicioDatosPrueba.generarDatos();
 	}
 }

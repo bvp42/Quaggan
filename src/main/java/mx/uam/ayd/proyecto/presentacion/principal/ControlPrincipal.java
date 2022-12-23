@@ -99,12 +99,14 @@ public class ControlPrincipal {
 		ventanaInicio.muestra(this);
 		ventanaInicio.ActualizaVentanaInicio(empleado.getTipoEmpleado());
 		ventana.setVisibleBtnAgregarAgremiado(true);
+		ventana.setVisibleModidficarAviso(true);
 	}
 
 	public void cerrarSesion(){
 		empleado = null;
 		agremiado = null;
 		ventana.setVisibleBtnAgregarAgremiado(false);
+		ventana.setVisibleModidficarAviso(false);
 	} 
 
 	public void agregarAgremiado(){
@@ -135,6 +137,10 @@ public class ControlPrincipal {
 
 		else if (empleado != null)
 			controlCrearPublicacion.inicia(empleado);
+	}
+
+	public void ModificarAviso(){
+		controlConsultarAvisos.inicia();
 	}
 
 	public String encriptada(String contraseña) throws NoSuchAlgorithmException{

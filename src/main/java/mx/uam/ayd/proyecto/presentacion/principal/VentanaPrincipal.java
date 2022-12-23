@@ -8,6 +8,8 @@ import javax.swing.event.MouseInputAdapter;
 
 import org.springframework.stereotype.Component;
 
+import net.bytebuddy.matcher.ElementMatcher.Junction;
+
 import javax.swing.JButton;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -29,6 +31,7 @@ public class VentanaPrincipal extends JFrame {
 
 	GridBagConstraints gbc_contenido;
 	JButton btnAgregarAgremiado;
+	JButton btnModificarAviso;
 
 	/**
 	 * Create the frame.
@@ -120,6 +123,23 @@ public class VentanaPrincipal extends JFrame {
 		gbc_btnAgregarAgremiado.gridy = 4;
 		panel.add(btnAgregarAgremiado, gbc_btnAgregarAgremiado);
 		btnAgregarAgremiado.setVisible(false);
+
+		//Agrega boton de Modificar Avisos
+		btnModificarAviso = new JButton("Modificar Avisos");
+		btnModificarAviso.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e){
+				control.ModificarAviso();		
+			}
+		});
+
+		GridBagConstraints gbc_btnModificarAviso = new GridBagConstraints();
+		gbc_btnModificarAviso.insets = new Insets(0, 0, 5, 0);
+		gbc_btnModificarAviso.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnModificarAviso.gridx = 0;
+		gbc_btnModificarAviso.gridy = 5;
+		panel.add(btnModificarAviso, gbc_btnModificarAviso);
+		btnModificarAviso.setVisible(false);
 		
 		//agrega boton de comentarios
 		JButton btnComentarios = new JButton("Comentarios");
@@ -178,5 +198,9 @@ public class VentanaPrincipal extends JFrame {
 
 	public void setVisibleBtnAgregarAgremiado(boolean visible){
 		btnAgregarAgremiado.setVisible(visible);
+	}
+
+	public void setVisibleModidficarAviso(boolean visible){
+		btnModificarAviso.setVisible(visible);
 	}
 }

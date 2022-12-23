@@ -53,23 +53,25 @@ public class Componente extends JPanel {
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 1;
 		gbc_scrollPane.gridy = 5;
-		add(scrollPane, gbc_scrollPane);
+		//add(scrollPane, gbc_scrollPane);
 		
 		JTextArea textArea = new JTextArea();
 		textArea.setEnabled(false);
 		texto = textArea;
 		textArea.setLineWrap(true);
-		scrollPane.setViewportView(textArea);
+		add(textArea, gbc_scrollPane);
+		//scrollPane.setViewportView(textArea);
 		
 		
 		
 		
 	}
-	public void setParams(String contenido,String date) {
+	public JTextArea setParams(String contenido,String date) {
 		texto.setText(contenido);
 		fecha1.setText(date);
+		return texto;
 	}
-	public void setParams(String contenido,String date,ImageIcon icoimagen) {
+	public JTextArea setParams(String contenido,String date,ImageIcon icoimagen) {
 		texto.setText(contenido);
 		fecha1.setText(date);
 		Image imagen_escalada = icoimagen.getImage();
@@ -77,5 +79,13 @@ public class Componente extends JPanel {
 		ImageIcon img = new ImageIcon(imagen_escalada);
 		imagen.setIcon(img);
 		imagen.setText("");
+		return texto;
+	}
+	public void setHabilitar(Boolean habilita){
+		texto.setEnabled(habilita);
+	}
+
+	public String getTexto(){
+		return texto.getText();
 	}
 }
